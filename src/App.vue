@@ -1,11 +1,13 @@
 <template>
-  <HeaderNav />
+  <AppHeader />
   <RouterView />
+  <AppFooter />
 </template>
 
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import HeaderNav from './layout/HeaderNav.vue'
+import AppHeader from './layout/AppHeader.vue'
+import AppFooter from './layout/AppFooter.vue'
 </script>
 
 
