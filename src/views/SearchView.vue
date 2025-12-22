@@ -1,9 +1,43 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import type { Pokemon } from '../types/pokemon'
 
 const searchId = ref('')
 const searchName = ref('')
 const searchType = ref('')
+
+const results = ref<Pokemon | null>(null)
+const loading = ref(false)
+const error = ref('')
+
+function searchPokemon() {
+  if (!searchId.value) {
+    error.value = 'Veuillez entrer un ID'
+    return
+  }
+
+  loading.value = true
+  error.value = ''
+
+  fetch(`https://pokebuildapi.fr/api/v1/pokemon/${searchId.value}`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Pokémon non trouvé')
+      }
+      return response.json()
+    })
+    .then((data) => {
+      results.value = data
+    })
+    .catch((err) => {
+      error.value = err instanceof Error ? err.message : 'Erreur lors de la recherche'
+      results.value = null
+    })
+    .finally(() => {
+      loading.value = false
+    })
+}
+
 </script>
 
 <template>
@@ -40,7 +74,15 @@ const searchType = ref('')
           class="search-input"
         />
       </div>
-      <button class="search-button">Rechercher</button>
+      <button class="search-button" @click="searchPokemon" :disabled="loading">
+        {{ loading ? 'Recherche...' : 'Rechercher' }}
+      </button>
+    </div>
+
+    <div v-if="error" class="error">{{ error }}</div>
+
+    <div v-if="results" class="results">
+      <h2>Résultats de la recherche</h2>
     </div>
   </main>
 </template>
@@ -98,5 +140,40 @@ label {
 
 .search-button:hover {
   background-color: #369970;
+}
+
+.search-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.error {
+  background-color: #fee;
+  color: #c33;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.results {
+  background-color: #f5f5f5;
+  padding: 1.5rem;
+  border-radius: 4px;
+  margin-top: 2rem;
+}
+
+.results h2 {
+  color: #333;
+  margin-top: 0;
+}
+
+.pokemon-image {
+  max-width: 200px;
+  margin: 1rem 0;
+}
+
+.results p {
+  margin: 0.5rem 0;
+  color: #666;
 }
 </style>
