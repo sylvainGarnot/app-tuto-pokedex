@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import type { Pokemon } from '../types/pokemon'
+import type { Pokemon, PokemonType } from '../types/pokemon'
 
 const searchId = ref('')
 const searchName = ref('')
@@ -41,7 +41,17 @@ function searchPokemon() {
       return response.json()
     })
     .then((data) => {
-      results.value = data
+      results.value = {
+        id: data.id,
+        pokedexId: data.pokedexId,
+        name: data.name,
+        image: data.image,
+        sprite: data.sprite,
+        types: data.apiTypes.map((type: PokemonType) => ({
+          name: type.name,
+          image: type.image,
+        })),
+      }
     })
     .catch((err) => {
       error.value = err instanceof Error ? err.message : 'Erreur lors de la recherche'
@@ -96,7 +106,14 @@ function searchPokemon() {
     <div v-if="error" class="error">{{ error }}</div>
 
     <div v-if="results" class="results">
-      <h2>Résultats de la recherche</h2>
+      <div class="pokemon-card">
+        <span class="pokemon-id">{{ results.id }}</span>
+        <span class="pokemon-name">{{ results.name }}</span>
+        <img v-if="results.sprite" :src="results.sprite" :alt="results.name" class="pokemon-sprite" />
+        <div v-if="results.types && results.types.length > 0" class="types-icons">
+          <img v-for="type in results.types" :key="type.name" :src="type.image" :alt="type.name" class="type-icon" />
+        </div>
+      </div>
     </div>
   </main>
 </template>
@@ -170,24 +187,101 @@ label {
 }
 
 .results {
-  background-color: #f5f5f5;
+  background-color: white;
   padding: 1.5rem;
-  border-radius: 4px;
+  border-radius: 8px;
   margin-top: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.results h2 {
+.pokemon-card {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@media (max-width: 768px) {
+  .pokemon-card {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+}
+
+.pokemon-id {
+  font-size: 1.2rem;
+  font-weight: bold;
   color: #333;
-  margin-top: 0;
+  min-width: 50px;
 }
 
-.pokemon-image {
-  max-width: 200px;
-  margin: 1rem 0;
+.pokemon-name {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #333;
+  min-width: 100px;
 }
 
-.results p {
+.pokemon-info {
+  background-color: #f9f9f9;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #eee;
+  min-width: 150px;
+}
+
+.pokemon-info p {
   margin: 0.5rem 0;
-  color: #666;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.pokemon-sprite {
+  max-width: 100px;
+  height: auto;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+.pokemon-sprite:hover {
+  transform: scale(1.05);
+}
+
+.pokemon-types {
+  grid-column: auto;
+  grid-row: auto;
+  background-color: #f9f9f9;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #eee;
+  height: fit-content;
+  min-width: 150px;
+}
+
+.pokemon-types h3 {
+  margin-top: 0;
+  color: #333;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+}
+
+.types-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.types-icons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-left: auto;
+}
+
+.type-icon {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
 }
 </style>
