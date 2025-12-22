@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import type { Pokemon } from '../types/pokemon'
 
 const searchId = ref('')
@@ -10,16 +10,30 @@ const results = ref<Pokemon | null>(null)
 const loading = ref(false)
 const error = ref('')
 
+watch(searchId, (newValue) => {
+  if (newValue) {
+    searchName.value = ''
+  }
+})
+
+watch(searchName, (newValue) => {
+  if (newValue) {
+    searchId.value = ''
+  }
+})
+
 function searchPokemon() {
-  if (!searchId.value) {
-    error.value = 'Veuillez entrer un ID'
+  const searchValue = searchId.value || searchName.value
+
+  if (!searchValue) {
+    error.value = 'Veuillez entrer un ID ou un nom'
     return
   }
 
   loading.value = true
   error.value = ''
 
-  fetch(`https://pokebuildapi.fr/api/v1/pokemon/${searchId.value}`)
+  fetch(`https://pokebuildapi.fr/api/v1/pokemon/${searchValue}`)
     .then((response) => {
       if (!response.ok) {
         throw new Error('Pokémon non trouvé')
