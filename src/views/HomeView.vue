@@ -6,7 +6,10 @@ import { RouterLink } from 'vue-router'
   <main>
     <h1>Bienvenue sur Pokédex</h1>
     <p>Explorez le monde des Pokémon</p>
-    <RouterLink to="/search" class="btn">Commencer la recherche</RouterLink>
+    <div class="buttons">
+      <RouterLink to="/search" class="btn">Commencer la recherche</RouterLink>
+      <RouterLink to="/search-by-type" class="btn">Recherche par type</RouterLink>
+    </div>
   </main>
 </template>
 
@@ -26,6 +29,13 @@ p {
   color: #666;
   font-size: 1.2rem;
   margin-bottom: 2rem;
+}
+
+.buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .btn {

@@ -3,6 +3,7 @@
     <nav>
       <RouterLink to="/">Home</RouterLink>
       <RouterLink to="/search">Recherche</RouterLink>
+      <RouterLink to="/search-by-type">Par Type</RouterLink>
       <RouterLink to="/about">About</RouterLink>
     </nav>
   </header>

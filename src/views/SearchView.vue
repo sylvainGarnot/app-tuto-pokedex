@@ -4,7 +4,6 @@ import type { Pokemon, PokemonType } from '../types/pokemon'
 
 const searchId = ref('')
 const searchName = ref('')
-const searchType = ref('')
 
 const results = ref<Pokemon | null>(null)
 const loading = ref(false)
@@ -85,16 +84,6 @@ function searchPokemon() {
           v-model="searchName"
           type="text"
           placeholder="Entrez le nom..."
-          class="search-input"
-        />
-      </div>
-      <div class="input-group">
-        <label for="type">Type</label>
-        <input
-          id="type"
-          v-model="searchType"
-          type="text"
-          placeholder="Entrez le type..."
           class="search-input"
         />
       </div>
