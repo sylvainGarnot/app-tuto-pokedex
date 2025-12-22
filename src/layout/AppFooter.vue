@@ -9,10 +9,13 @@
 
 <style scoped>
 footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
   border-top: 1px solid #ccc;
   padding: 1rem;
   text-align: center;
-  margin-top: auto;
   background-color: #f5f5f5;
 }
 
