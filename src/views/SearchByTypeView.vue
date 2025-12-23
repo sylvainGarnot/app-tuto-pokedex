@@ -1,22 +1,47 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import type { Pokemon } from '../types/pokemon'
+import { ref, onMounted } from 'vue'
+import type { Pokemon, PokemonType } from '../types/pokemon'
 
-const searchType = ref('')
+const apiTypes = ref<PokemonType[]>([])
+const inputType1 = ref<PokemonType | null>(null)
+const inputType2 = ref<PokemonType | null>(null)
 const results = ref<Pokemon[]>([])
+
 const loading = ref(false)
 const error = ref('')
 
+onMounted(() => {
+  loadApiTypes()
+})
+
+function loadApiTypes() {
+  fetch('https://pokebuildapi.fr/api/v1/types')
+    .then((response) => response.json())
+    .then((data) => {
+      apiTypes.value = data
+    })
+    .catch((err) => {
+      console.error('Erreur lors du chargement des types:', err)
+    })
+}
+
 function searchByType() {
-  if (!searchType.value) {
-    error.value = 'Veuillez entrer un type'
+  if (!inputType1.value && !inputType2.value) {
+    error.value = 'Veuillez sélectionner au moins un type'
     return
   }
 
   loading.value = true
   error.value = ''
 
-  fetch(`https://pokebuildapi.fr/api/v1/pokemon/types/${searchType.value}`)
+  let url: string
+  if (inputType1.value && inputType2.value) {
+    url = `https://pokebuildapi.fr/api/v1/pokemon/types/${inputType1.value.name}/${inputType2.value.name}`
+  } else {
+    url = `https://pokebuildapi.fr/api/v1/pokemon/type/${inputType1.value?.name}`
+  }
+
+  fetch(url)
     .then((response) => {
       if (!response.ok) {
         throw new Error('Type non trouvé')
@@ -41,20 +66,43 @@ function searchByType() {
     <h1>Recherche par Type</h1>
     <div class="search-container">
       <div class="input-group">
-        <label for="type">Type</label>
+        <label for="type1">Type 1</label>
         <div class="input-with-button">
-          <input
-            id="type"
-            v-model="searchType"
-            type="text"
-            placeholder="Entrez un type..."
+          <select
+            id="type1"
+            v-model="inputType1"
             class="search-input"
-          />
-          <button class="search-button" @click="searchByType" :disabled="loading">
-            {{ loading ? '...' : 'Chercher' }}
-          </button>
+            @keyup.enter="searchByType"
+          >
+            <option value="">Sélectionnez un type...</option>
+            <option v-for="type in apiTypes" :key="type.name" :value="type">
+              {{ type.name }}
+            </option>
+          </select>
+          <img v-if="inputType1?.image" :src="inputType1.image" :alt="inputType1.name" class="type-image" />
         </div>
       </div>
+      <div class="input-group">
+        <label for="type2">Type 2</label>
+        <div class="input-with-button">
+          <select
+            id="type2"
+            v-model="inputType2"
+            class="search-input"
+            :disabled="!inputType1"
+            @keyup.enter="searchByType"
+          >
+            <option value="">Sélectionnez un type...</option>
+            <option v-for="type in apiTypes" :key="type.name" :value="type">
+              {{ type.name }}
+            </option>
+          </select>
+          <img v-if="inputType2?.image" :src="inputType2.image" :alt="inputType2.name" class="type-image" />
+        </div>
+      </div>
+      <button class="search-button" @click="searchByType" :disabled="loading">
+        {{ loading ? '...' : 'Chercher' }}
+      </button>
     </div>
 
     <div v-if="error" class="error">{{ error }}</div>
@@ -108,6 +156,7 @@ label {
 .input-with-button {
   display: flex;
   gap: 0.5rem;
+  align-items: center;
 }
 
 .search-input {
@@ -115,6 +164,14 @@ label {
   padding: 0.75rem;
   font-size: 1rem;
   border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+}
+
+.type-image {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
   border-radius: 4px;
 }
 
@@ -164,7 +221,7 @@ label {
 
 .pokemon-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(6, 1fr);
   gap: 1rem;
 }
 
