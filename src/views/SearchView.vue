@@ -8,7 +8,6 @@ import ResultSimple from '../components/ResultSimple.vue'
 const route = useRoute()
 const router = useRouter()
 const result = ref<Pokemon | null>(null)
-const error = ref('')
 
 onMounted(() => {
   const id = route.query.id as string
@@ -22,15 +21,9 @@ onMounted(() => {
 function handleSearch(pokemon: Pokemon | null) {
   result.value = pokemon
   
-  // Mettre à jour la route basée sur les résultats
   if (pokemon && pokemon.id) {
     router.push({ query: { id: pokemon.id } })
-    error.value = ''
   }
-}
-
-function handleError(errorMsg: string) {
-  error.value = errorMsg
 }
 </script>
 
@@ -41,10 +34,9 @@ function handleError(errorMsg: string) {
       :id="(route.query.id as string)" 
       :name="(route.query.name as string)"
       @result="handleSearch"
-      @error="handleError"
     />
 
-    <ResultSimple :result="result" :error="error" />
+    <ResultSimple :result="result" />
   </main>
 </template>
 

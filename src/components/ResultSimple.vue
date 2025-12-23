@@ -3,13 +3,10 @@ import type { Pokemon } from '../types/pokemon'
 
 defineProps<{
   result: Pokemon | null
-  error: string
 }>()
 </script>
 
 <template>
-  <div v-if="error" class="error">{{ error }}</div>
-
   <div v-if="result" class="result">
     <div class="pokemon-card">
       <span class="pokemon-id">{{ result.id }}</span>
@@ -23,14 +20,6 @@ defineProps<{
 </template>
 
 <style scoped>
-.error {
-  background-color: #fee;
-  color: #c33;
-  padding: 1rem;
-  border-radius: 4px;
-  margin-bottom: 1rem;
-}
-
 .result {
   background-color: white;
   padding: 1.5rem;

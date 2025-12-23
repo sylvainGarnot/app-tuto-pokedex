@@ -2,21 +2,23 @@
 import { ref, watch, onMounted } from 'vue'
 import type { Pokemon, PokemonType } from '../types/pokemon'
 
+// VARIABLES D'ETAT
+const inputId = ref('')
+const inputName = ref('')
+const loading = ref(false)
+const error = ref('')
+
 const props = defineProps({
   id: String,
   name: String,
 })
 
-
 const emit = defineEmits<{
   result: [results: Pokemon | null]
-  error: [error: string]
 }>()
 
-const inputId = ref('')
-const inputName = ref('')
-const loading = ref(false)
 
+// MOUNTED
 onMounted(() => {
   if (props.id) {
     inputId.value = props.id
@@ -27,6 +29,7 @@ onMounted(() => {
   }
 })
 
+// WATCHERS
 watch(inputId, (newValue) => {
   if (newValue) {
     inputName.value = ''
@@ -39,11 +42,14 @@ watch(inputName, (newValue) => {
   }
 })
 
+
+// FONCTIONS
 function searchPokemon() {
   const searchValue = inputId.value || inputName.value
+  error.value = ''
 
   if (!searchValue) {
-    emit('error', 'Veuillez entrer un ID ou un nom')
+    error.value = 'Veuillez entrer un ID ou un nom'
     return
   }
 
@@ -68,7 +74,7 @@ function searchPokemon() {
       emit('result', results)
     })
     .catch(() => {
-      emit('error', 'Erreur lors de la recherche')
+      error.value = 'Erreur lors de la recherche'
       emit('result', null)
     })
     .finally(() => {
@@ -104,10 +110,19 @@ function searchPokemon() {
     <button class="search-button" @click="searchPokemon" :disabled="loading">
       {{ loading ? 'Recherche...' : 'Rechercher' }}
     </button>
+    <div v-if="error" class="error">{{ error }}</div>
   </div>
 </template>
 
 <style scoped>
+.error {
+  background-color: #fee;
+  color: #c33;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
 .search-container {
   display: flex;
   flex-direction: column;
