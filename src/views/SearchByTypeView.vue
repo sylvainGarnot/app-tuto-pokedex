@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import type { Pokemon, PokemonType } from '../types/pokemon'
 
+const route = useRoute()
+const router = useRouter()
 const apiTypes = ref<PokemonType[]>([])
 const inputType1 = ref<PokemonType | null>(null)
 const inputType2 = ref<PokemonType | null>(null)
@@ -12,11 +15,34 @@ const error = ref('')
 const hasSearched = ref(false)
 
 onMounted(() => {
-  loadApiTypes()
+  loadApiTypes().then(() => {
+    const type = route.query.type as string
+    const type1 = route.query.type1 as string
+    const type2 = route.query.type2 as string
+
+    // type prend la priorité, puis type1 et type2
+    if (type) {
+      const foundType = apiTypes.value.find((t) => t.name.toLowerCase() === type.toLowerCase())
+      if (foundType) inputType1.value = foundType
+    } else {
+      if (type1) {
+        const foundType1 = apiTypes.value.find((t) => t.name.toLowerCase() === type1.toLowerCase())
+        if (foundType1) inputType1.value = foundType1
+      }
+      if (type2) {
+        const foundType2 = apiTypes.value.find((t) => t.name.toLowerCase() === type2.toLowerCase())
+        if (foundType2) inputType2.value = foundType2
+      }
+    }
+
+    if (inputType1.value || inputType2.value) {
+      searchByType()
+    }
+  })
 })
 
-function loadApiTypes() {
-  fetch('https://pokebuildapi.fr/api/v1/types')
+function loadApiTypes(): Promise<void> {
+  return fetch('https://pokebuildapi.fr/api/v1/types')
     .then((response) => response.json())
     .then((data) => {
       apiTypes.value = data
@@ -35,6 +61,13 @@ function searchByType() {
   loading.value = true
   error.value = ''
   hasSearched.value = true
+
+  // Mettre à jour la route
+  if (inputType1.value && inputType2.value) {
+    router.push({ query: { type1: inputType1.value.name, type2: inputType2.value.name } })
+  } else if (inputType1.value) {
+    router.push({ query: { type: inputType1.value.name } })
+  }
 
   let url: string
   if (inputType1.value && inputType2.value) {

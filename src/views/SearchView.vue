@@ -1,13 +1,31 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import type { Pokemon, PokemonType } from '../types/pokemon'
 
+const route = useRoute()
+const router = useRouter()
 const searchId = ref('')
 const searchName = ref('')
 
 const results = ref<Pokemon | null>(null)
 const loading = ref(false)
 const error = ref('')
+
+onMounted(() => {
+  const id = route.query.id as string
+  const name = route.query.name as string
+
+  if (id) {
+    searchId.value = id
+  } else if (name) {
+    searchName.value = name
+  }
+
+  if (searchId.value || searchName.value) {
+    searchPokemon()
+  }
+})
 
 watch(searchId, (newValue) => {
   if (newValue) {
@@ -31,6 +49,13 @@ function searchPokemon() {
 
   loading.value = true
   error.value = ''
+
+  // Mettre à jour la route
+  if (searchId.value) {
+    router.push({ query: { id: searchId.value } })
+  } else if (searchName.value) {
+    router.push({ query: { name: searchName.value } })
+  }
 
   fetch(`https://pokebuildapi.fr/api/v1/pokemon/${searchValue}`)
     .then((response) => {
@@ -75,6 +100,7 @@ function searchPokemon() {
           type="text"
           placeholder="Entrez l'ID..."
           class="search-input"
+          @keyup.enter="searchPokemon"
         />
       </div>
       <div class="input-group">
@@ -85,6 +111,7 @@ function searchPokemon() {
           type="text"
           placeholder="Entrez le nom..."
           class="search-input"
+          @keyup.enter="searchPokemon"
         />
       </div>
       <button class="search-button" @click="searchPokemon" :disabled="loading">
