@@ -9,6 +9,7 @@ const results = ref<Pokemon[]>([])
 
 const loading = ref(false)
 const error = ref('')
+const hasSearched = ref(false)
 
 onMounted(() => {
   loadApiTypes()
@@ -33,6 +34,7 @@ function searchByType() {
 
   loading.value = true
   error.value = ''
+  hasSearched.value = true
 
   let url: string
   if (inputType1.value && inputType2.value) {
@@ -106,6 +108,10 @@ function searchByType() {
     </div>
 
     <div v-if="error" class="error">{{ error }}</div>
+
+    <div v-if="hasSearched && !error && results.length === 0 && !loading" class="no-results">
+      Aucun résultat trouvé
+    </div>
 
     <div v-if="results.length > 0" class="results-list">
       <h2>{{ results.length }} Pokémon trouvé(s)</h2>
@@ -201,6 +207,16 @@ label {
   color: #c33;
   padding: 1rem;
   border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.no-results {
+  background-color: #f0f0f0;
+  color: #666;
+  padding: 2rem;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 1.1rem;
   margin-bottom: 1rem;
 }
 
