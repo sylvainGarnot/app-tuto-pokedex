@@ -63,7 +63,7 @@ function searchByType() {
 
 <template>
   <main>
-    <h1>Recherche par Type</h1>
+    <h1>Recherche avancée</h1>
     <div class="search-container">
       <div class="input-group">
         <label for="type1">Type 1</label>
