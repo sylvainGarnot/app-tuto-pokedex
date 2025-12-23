@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { RouterLink } from 'vue-router'
 import type { Pokemon } from '../types/pokemon'
 
 defineProps<{
@@ -10,11 +11,11 @@ defineProps<{
   <div v-if="results.length > 0" class="results-list">
     <h2>{{ results.length }} Pokémon trouvé(s)</h2>
     <div class="pokemon-grid">
-      <div v-for="pokemon in results" :key="pokemon.id" class="pokemon-item">
+      <RouterLink v-for="pokemon in results" :key="pokemon.id" :to="`/pokemon/${pokemon.id}`" class="pokemon-item">
         <span class="pokemon-id">{{ pokemon.id }}</span>
         <span class="pokemon-name">{{ pokemon.name }}</span>
         <img v-if="pokemon.sprite" :src="pokemon.sprite" :alt="pokemon.name" class="pokemon-sprite" />
-      </div>
+      </RouterLink>
     </div>
   </div>
 </template>
@@ -42,6 +43,8 @@ defineProps<{
 }
 
 .pokemon-item {
+  text-decoration: none;
+  color: inherit;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -49,6 +52,9 @@ defineProps<{
   padding: 1rem;
   background-color: #f9f9f9;
   border-radius: 8px;
+  border: 1px solid #eee;
+  transition: transform 0.2s ease;
+  cursor: pointer;
   border: 1px solid #eee;
   transition: transform 0.2s ease;
 }

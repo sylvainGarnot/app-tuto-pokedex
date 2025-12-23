@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { RouterLink } from 'vue-router'
 import type { Pokemon } from '../types/pokemon'
 
 defineProps<{
@@ -8,14 +9,16 @@ defineProps<{
 
 <template>
   <div v-if="result" class="result">
-    <div class="pokemon-card">
-      <span class="pokemon-id">{{ result.id }}</span>
-      <span class="pokemon-name">{{ result.name }}</span>
-      <img v-if="result.sprite" :src="result.sprite" :alt="result.name" class="pokemon-sprite" />
-      <div v-if="result.types && result.types.length > 0" class="types-icons">
-        <img v-for="type in result.types" :key="type.name" :src="type.image" :alt="type.name" class="type-icon" />
+    <RouterLink :to="`/pokemon/${result.id}`" class="pokemon-card-link">
+      <div class="pokemon-card">
+        <span class="pokemon-id">{{ result.id }}</span>
+        <span class="pokemon-name">{{ result.name }}</span>
+        <img v-if="result.sprite" :src="result.sprite" :alt="result.name" class="pokemon-sprite" />
+        <div v-if="result.types && result.types.length > 0" class="types-icons">
+          <img v-for="type in result.types" :key="type.name" :src="type.image" :alt="type.name" class="type-icon" />
+        </div>
       </div>
-    </div>
+    </RouterLink>
   </div>
 </template>
 
@@ -28,9 +31,22 @@ defineProps<{
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+.pokemon-card-link {
+  text-decoration: none;
+  color: inherit;
+}
+
 .pokemon-card {
   display: flex;
   gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.pokemon-card:hover {
+  opacity: 0.8;
   align-items: center;
   justify-content: space-between;
 }
