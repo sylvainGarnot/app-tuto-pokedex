@@ -88,6 +88,7 @@ function removePokemon(pokemonId: number) {
   font-weight: 600;
   white-space: nowrap;
   transition: all 0.2s;
+  align-self: center;
 }
 
 .remove-button:hover {

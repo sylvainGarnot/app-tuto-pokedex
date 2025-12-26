@@ -28,6 +28,23 @@ export const useTeamStore = defineStore('team', () => {
     }
   }
 
+  async function apiPostTeam(team: PokemonTeam) {
+    try {
+      await fetch('http://localhost:3000/teams', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(team),
+      })
+      clearCurrentTeam()
+    } catch {
+      // error handling
+    } finally {
+      // loading false
+    }
+  }
+
   function clearCurrentTeam() {
     currentTeam.value = null
   }
@@ -37,6 +54,7 @@ export const useTeamStore = defineStore('team', () => {
     setCurrentTeam,
     addCurrentTeamPokemon,
     removeCurrentTeamPokemon,
+    apiPostTeam,
     clearCurrentTeam,
   }
 })

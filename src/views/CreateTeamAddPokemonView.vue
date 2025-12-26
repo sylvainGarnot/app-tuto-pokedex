@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useTeamStore } from '../stores/teamStore'
 import { formatDate } from '../utils/dateFormatter'
 import PokemonSearch from '../components/PokemonSearch.vue'
@@ -7,10 +8,12 @@ import PokemonResultSimple from '../components/PokemonResultSimple.vue'
 import PokemonTeam from '../components/PokemonTeam.vue'
 import type { Pokemon } from '../types/pokemon'
 
+const router = useRouter()
+const teamStore = useTeamStore()
+
 
 // DATA & STORE
-const teamStore = useTeamStore()
-const team = computed(() => teamStore.currentTeam)
+const currentTeam = computed(() => teamStore.currentTeam)
 const searchResult = ref<Pokemon | null>(null)
 const alertMessage = ref('')
 
@@ -22,14 +25,14 @@ function handleSearchResult(result: Pokemon | null) {
 }
 
 function addPokemonToTeam() {
-  if (!searchResult.value || !team.value) return
+  if (!searchResult.value || !currentTeam.value) return
 
-  if (team.value.pokemons.length >= 6) {
+  if (currentTeam.value.pokemons.length >= 6) {
     alertMessage.value = 'Équipe complète (6 Pokémons max)'
     return
   }
 
-  if (team.value.pokemons.some(p => p.id === searchResult.value.id)) {
+  if (currentTeam.value.pokemons.some(p => p.id === searchResult?.value?.id)) {
     alertMessage.value = 'Ce Pokémon est déjà dans l\'équipe'
     return
   }
@@ -45,16 +48,29 @@ function addPokemonToTeam() {
 function removePokemon(pokemonId: number) {
   teamStore.removeCurrentTeamPokemon(pokemonId)
 }
+
+async function saveTeam() {
+  if (!currentTeam.value) return
+  
+  try {
+    await teamStore.apiPostTeam(currentTeam.value)
+    router.push({ name: 'home' })
+  } catch {
+    // Gérer l'erreur de sauvegarde
+  } finally {
+    // loading state if needed
+  }
+}
 </script>
 
 <template>
   <main>
-    <h1 v-if="team">Ajouter des Pokémons à {{ team.name }}</h1>
+    <h1 v-if="currentTeam">Ajouter des Pokémons à {{ currentTeam.name }}</h1>
 
-    <div class="team-info" v-if="team">
-      <p><strong>Nom :</strong> {{ team.name }}</p>
-      <p v-if="team.subname"><strong>Sous-titre :</strong> {{ team.subname }}</p>
-      <p><strong>Créée le :</strong> {{ formatDate(team.createdAt) }}</p>
+    <div class="team-info" v-if="currentTeam">
+      <p><strong>Nom :</strong> {{ currentTeam.name }}</p>
+      <p v-if="currentTeam.subname"><strong>Sous-titre :</strong> {{ currentTeam.subname }}</p>
+      <p><strong>Créée le :</strong> {{ formatDate(currentTeam.createdAt) }}</p>
     </div>
 
     <div class="content">
@@ -62,19 +78,24 @@ function removePokemon(pokemonId: number) {
         <PokemonSearch @result="handleSearchResult" />
         
         <div v-if="alertMessage" class="success-message">{{ alertMessage }}</div>
-        <div v-if="searchResult">
-          
+        <div v-if="searchResult" class="search-result-wrapper">
           <PokemonResultSimple :result="searchResult" />
-          
-          <br>
-          <br>
           <button @click="addPokemonToTeam" class="add-button">
-            Ajouter à l'équipe
+            Ajouter
           </button>
         </div>
       </div>
 
-      <PokemonTeam :pokemons="team?.pokemons ?? []" @remove="removePokemon" />
+      <div class="team-section-wrapper">
+        <PokemonTeam :pokemons="currentTeam?.pokemons ?? []" @remove="removePokemon" />
+        
+        <button 
+          @click="saveTeam" 
+          class="save-team-button"
+        >
+          Sauvegarder l'équipe
+        </button>
+      </div>
     </div>
   </main>
 </template>
@@ -82,8 +103,10 @@ function removePokemon(pokemonId: number) {
 <style scoped>
 main {
   padding: 2rem;
+  padding-bottom: 4rem;
   max-width: 1200px;
   margin: 0 auto;
+  margin-bottom: 2rem;
 }
 
 h1 {
@@ -124,12 +147,29 @@ h1 {
   gap: 1rem;
 }
 
+.team-section-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
 .success-message {
   background-color: #e8f5e9;
   color: #2e7d32;
   padding: 1rem;
   border-radius: 8px;
   font-weight: 500;
+}
+
+.search-result-wrapper {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+:deep(.search-result-wrapper .result) {
+  flex: 1;
+  margin-top: 0;
 }
 
 .add-button {
@@ -141,10 +181,35 @@ h1 {
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s;
+  white-space: nowrap;
+  height: fit-content;
 }
 
 .add-button:hover {
   background-color: #369970;
+}
+
+.save-team-button {
+  padding: 1rem;
+  background-color: #42b983;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: auto;
+  align-self: flex-end;
+}
+
+.save-team-button:hover:not(:disabled) {
+  background-color: #369970;
+}
+
+.save-team-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
 
 @media (max-width: 900px) {
