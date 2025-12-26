@@ -1,15 +1,34 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
+import { onMounted } from 'vue'
+import { useTeamStore } from '../stores/teamStore'
+import PokemonTeamMultiple from '../components/PokemonTeamMultiple.vue'
+
+const teamStore = useTeamStore()
+
+onMounted(() => {
+  teamStore.apiGetTeams()
+})
 </script>
 
 <template>
   <main>
-    <h1>Bienvenue</h1>
-    <p>Explorez le monde des Pokémon</p>
-    <div class="buttons">
-      <RouterLink to="/search" class="btn">Recherche simple</RouterLink>
-      <RouterLink to="/search-by-type" class="btn">Recherche avancée</RouterLink>
-      <RouterLink to="/create-team" class="btn btn-secondary">Créer une équipe</RouterLink>
+    <div class="content">
+      <div class="left-section">
+        <h1>Bienvenue</h1>
+        <p>Explorez le monde des Pokémon</p>
+        <div class="buttons">
+          <RouterLink to="/search" class="btn">Recherche simple</RouterLink>
+          <RouterLink to="/search-by-type" class="btn">Recherche avancée</RouterLink>
+          <RouterLink to="/create-team" class="btn btn-secondary">Créer une équipe</RouterLink>
+        </div>
+      </div>
+      <div class="right-section">
+        <h2>Vos équipes</h2>
+        <section class="teams-section">
+          <PokemonTeamMultiple :teams="teamStore.teams" />
+        </section>
+      </div>
     </div>
   </main>
 </template>
@@ -17,27 +36,39 @@ import { RouterLink } from 'vue-router'
 <style scoped>
 main {
   padding: 2rem;
-  text-align: center;
 }
 
 h1 {
   color: #333;
   font-size: 2.5rem;
   margin-bottom: 1rem;
+  text-align: left;
 }
 
 p {
   color: #666;
   font-size: 1.2rem;
   margin-bottom: 2rem;
+  text-align: left;
+}
+
+.content {
+  display: flex;
+  gap: 2rem;
+}
+
+.left-section {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .buttons {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  justify-content: center;
-  align-items: center;
 }
 
 .btn {
@@ -48,6 +79,7 @@ p {
   text-decoration: none;
   border-radius: 4px;
   transition: background-color 0.2s;
+  white-space: nowrap;
 }
 
 .btn:hover {
@@ -60,5 +92,22 @@ p {
 
 .btn-secondary:hover {
   background-color: #4a6eef;
+}
+
+.right-section {
+  flex: 1;
+}
+
+.teams-section {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.teams-section h2 {
+  color: #333;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
 }
 </style>

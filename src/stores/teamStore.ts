@@ -1,12 +1,13 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import axios from 'axios'
 import type { PokemonTeam, Pokemon } from '../types/pokemon'
 
 export const useTeamStore = defineStore('team', () => {
 
   // STATE
   const currentTeam = ref<PokemonTeam | null>(null)
-  // const teams = ref<PokemonTeam[]>([])
+  const teams = ref<PokemonTeam[]>([])
 
 
   // FUNCTIONS
@@ -45,16 +46,50 @@ export const useTeamStore = defineStore('team', () => {
     }
   }
 
+  // FUNCTION USING FETCH
+  // function apiGetTeams() {
+  //   return fetch('http://localhost:3000/teams')
+  //     .then(response => {
+  //       if (!response.ok) {
+  //         throw new Error('Erreur lors de la récupération des équipes')
+  //       }
+  //       return response.json()
+  //     })
+  //     .then(data => {
+  //       teams.value = data
+  //       return data
+  //     })
+  //     .catch(error => {
+  //       console.error('Erreur:', error)
+  //       throw error
+  //     })
+  // }
+
+  // FUNCTION USING AXIOS
+  function apiGetTeams() {
+    return axios.get('http://localhost:3000/teams')
+      .then(response => {
+        teams.value = response.data
+        return response.data
+      })
+      .catch(error => {
+        console.error('Erreur:', error)
+        throw error
+      })
+  }
+
   function clearCurrentTeam() {
     currentTeam.value = null
   }
 
   return {
     currentTeam,
+    teams,
     setCurrentTeam,
     addCurrentTeamPokemon,
     removeCurrentTeamPokemon,
     apiPostTeam,
+    apiGetTeams,
     clearCurrentTeam,
   }
 })
