@@ -4,6 +4,7 @@ import { useTeamStore } from '../stores/teamStore'
 import { formatDate } from '../utils/dateFormatter'
 import SearchSimple from '../components/SearchSimple.vue'
 import ResultSimple from '../components/ResultSimple.vue'
+import PokemonTeam from '../components/PokemonTeam.vue'
 import type { Pokemon } from '../types/pokemon'
 
 
@@ -73,17 +74,7 @@ function removePokemon(pokemonId: number) {
         </div>
       </div>
 
-      <div class="team-section">
-        <h2>Mon équipe ({{ team?.pokemons.length }}/6)</h2>
-        <div class="pokemons-list">
-          <div v-for="pokemon in team?.pokemons" :key="pokemon.id" class="pokemon-item">
-            <span class="pokemon-name">{{ pokemon.name }}</span>
-            <button @click="removePokemon(pokemon.id)" class="remove-button">
-              ✕
-            </button>
-          </div>
-        </div>
-      </div>
+      <PokemonTeam :pokemons="team?.pokemons ?? []" @remove="removePokemon" />
     </div>
   </main>
 </template>
@@ -154,58 +145,6 @@ h1 {
 
 .add-button:hover {
   background-color: #369970;
-}
-
-.team-section {
-  background-color: white;
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.team-section h2 {
-  margin-top: 0;
-  color: #333;
-  font-size: 1.25rem;
-  border-bottom: 2px solid #42b983;
-  padding-bottom: 0.5rem;
-}
-
-.pokemons-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.pokemon-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem;
-  background-color: #f9f9f9;
-  border-radius: 6px;
-  border: 1px solid #e0e0e0;
-}
-
-.pokemon-name {
-  font-weight: 500;
-  color: #333;
-}
-
-.remove-button {
-  padding: 0.25rem 0.5rem;
-  background-color: #fee;
-  color: #c33;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.2s;
-}
-
-.remove-button:hover {
-  background-color: #fcc;
-  border-color: #c33;
 }
 
 @media (max-width: 900px) {
