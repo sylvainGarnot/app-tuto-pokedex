@@ -1,18 +1,21 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import type { Pokemon, PokemonTeam } from '../types/pokemon'
+import { useTeamStore } from '../stores/teamStore'
+
+const router = useRouter()
+const teamStore = useTeamStore()
 
 const teamName = ref('')
 const teamSubname = ref('')
 const loading = ref(false)
 const error = ref('')
-const success = ref('')
 
-async function createTeam() {
+function createTeam() {
 
   loading.value = true
   error.value = ''
-  success.value = ''
 
   const newTeam: PokemonTeam = {
     id: Date.now().toString(),
@@ -22,28 +25,13 @@ async function createTeam() {
     createdAt: new Date().toISOString(),
   }
 
-  try {
-    const response = await fetch('http://localhost:3000/teams', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(newTeam),
-    })
+  // Sauvegarder l'équipe dans le store
+  teamStore.setCurrentTeam(newTeam)
 
-    if (!response.ok) {
-      throw new Error('Erreur lors de la création de l\'équipe')
-    }
-
-    success.value = 'Équipe créée avec succès!'
-    teamName.value = ''
-    teamSubname.value = ''
-
-  } catch {
-    error.value = 'Une erreur est survenue'
-  } finally {
-    loading.value = false
-  }
+  // Rediriger vers la page d'ajout de Pokémons
+  router.push({
+    name: 'createTeamAddPokemon',
+  })
 }
 </script>
 
@@ -76,7 +64,6 @@ async function createTeam() {
         </div>
 
         <div v-if="error" class="error">{{ error }}</div>
-        <div v-if="success" class="success">{{ success }}</div>
 
         <button type="submit" :disabled="loading" class="submit-button">
           {{ loading ? 'Création en cours...' : 'Créer l\'équipe' }}

@@ -4,6 +4,7 @@ import SearchView from '../views/SearchView.vue'
 import SearchByTypeView from '../views/SearchByTypeView.vue'
 import PokemonView from '../views/PokemonView.vue'
 import CreateTeamView from '../views/CreateTeamView.vue'
+import CreateTeamAddPokemonView from '../views/CreateTeamAddPokemonView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,6 +33,11 @@ const router = createRouter({
       path: '/create-team',
       name: 'createTeam',
       component: CreateTeamView,
+    },
+    {
+      path: '/create-team/add-pokemon/',
+      name: 'createTeamAddPokemon',
+      component: CreateTeamAddPokemonView,
     },
   ],
 })
