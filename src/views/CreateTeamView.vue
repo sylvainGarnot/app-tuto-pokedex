@@ -1,0 +1,196 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+import type { Pokemon, PokemonTeam } from '../types/pokemon'
+
+const teamName = ref('')
+const teamSubname = ref('')
+const loading = ref(false)
+const error = ref('')
+const success = ref('')
+
+async function createTeam() {
+
+  loading.value = true
+  error.value = ''
+  success.value = ''
+
+  const newTeam: PokemonTeam = {
+    id: Date.now().toString(),
+    name: teamName.value,
+    subname: teamSubname.value,
+    pokemons: [] as Pokemon[],
+    createdAt: new Date().toISOString(),
+  }
+
+  try {
+    const response = await fetch('http://localhost:3000/teams', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newTeam),
+    })
+
+    if (!response.ok) {
+      throw new Error('Erreur lors de la création de l\'équipe')
+    }
+
+    success.value = 'Équipe créée avec succès!'
+    teamName.value = ''
+    teamSubname.value = ''
+
+  } catch {
+    error.value = 'Une erreur est survenue'
+  } finally {
+    loading.value = false
+  }
+}
+</script>
+
+<template>
+  <main>
+    <h1>Créer une nouvelle équipe</h1>
+
+    <div class="form-container">
+      <form @submit.prevent="createTeam" class="team-form">
+        <div class="form-group">
+          <label for="team-name">Nom de l'équipe</label>
+          <input
+            id="team-name"
+            v-model="teamName"
+            type="text"
+            placeholder="Ex: nom de l'équipe"
+            required
+            class="input"
+          />
+        </div>
+        <div class="form-group">
+          <label for="team-subname">Sous-titre (optionnel)</label>
+          <input
+            id="team-subname"
+            v-model="teamSubname"
+            type="text"
+            placeholder="Ex: sous-titre de l'équipe"
+            class="input"
+          />
+        </div>
+
+        <div v-if="error" class="error">{{ error }}</div>
+        <div v-if="success" class="success">{{ success }}</div>
+
+        <button type="submit" :disabled="loading" class="submit-button">
+          {{ loading ? 'Création en cours...' : 'Créer l\'équipe' }}
+        </button>
+      </form>
+    </div>
+  </main>
+</template>
+
+<style scoped>
+main {
+  padding: 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+main h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+}
+
+.form-container {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.team-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #333;
+  font-size: 1rem;
+}
+
+.input {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #42b983;
+  box-shadow: 0 0 0 3px rgba(66, 185, 131, 0.1);
+}
+
+.input:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.error {
+  padding: 1rem;
+  background-color: #fee;
+  color: #c33;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.success {
+  padding: 1rem;
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.submit-button {
+  padding: 0.75rem;
+  background-color: #42b983;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submit-button:hover:not(:disabled) {
+  background-color: #369970;
+}
+
+.submit-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+  main {
+    padding: 1rem;
+  }
+
+  main h1 {
+    font-size: 1.5rem;
+  }
+}
+</style>

@@ -9,6 +9,7 @@ import { RouterLink } from 'vue-router'
     <div class="buttons">
       <RouterLink to="/search" class="btn">Recherche simple</RouterLink>
       <RouterLink to="/search-by-type" class="btn">Recherche avancée</RouterLink>
+      <RouterLink to="/create-team" class="btn btn-secondary">Créer une équipe</RouterLink>
     </div>
   </main>
 </template>
@@ -51,5 +52,13 @@ p {
 
 .btn:hover {
   background-color: #369970;
+}
+
+.btn-secondary {
+  background-color: #5a7eff;
+}
+
+.btn-secondary:hover {
+  background-color: #4a6eef;
 }
 </style>
