@@ -2,8 +2,8 @@
 import { computed, ref } from 'vue'
 import { useTeamStore } from '../stores/teamStore'
 import { formatDate } from '../utils/dateFormatter'
-import SearchSimple from '../components/SearchSimple.vue'
-import ResultSimple from '../components/ResultSimple.vue'
+import PokemonSearch from '../components/PokemonSearch.vue'
+import PokemonResultSimple from '../components/PokemonResultSimple.vue'
 import PokemonTeam from '../components/PokemonTeam.vue'
 import type { Pokemon } from '../types/pokemon'
 
@@ -59,12 +59,12 @@ function removePokemon(pokemonId: number) {
 
     <div class="content">
       <div class="search-section">
-        <SearchSimple @result="handleSearchResult" />
+        <PokemonSearch @result="handleSearchResult" />
         
         <div v-if="alertMessage" class="success-message">{{ alertMessage }}</div>
         <div v-if="searchResult">
           
-          <ResultSimple :result="searchResult" />
+          <PokemonResultSimple :result="searchResult" />
           
           <br>
           <br>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Pokemon } from '../types/pokemon'
-import ResultSimple from './ResultSimple.vue'
+import PokemonResultSimple from './PokemonResultSimple.vue'
 
 defineProps<{
   pokemons: Pokemon[]
@@ -26,7 +26,7 @@ function removePokemon(pokemonId: number) {
       </div>
       
       <div v-for="pokemon in pokemons" :key="pokemon.id" class="pokemon-wrapper">
-        <ResultSimple :result="pokemon" />
+        <PokemonResultSimple :result="pokemon" />
         <button @click="removePokemon(pokemon.id)" class="remove-button">
           ✕ Retirer
         </button>

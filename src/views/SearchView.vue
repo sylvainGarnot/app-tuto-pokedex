@@ -2,8 +2,8 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { Pokemon } from '../types/pokemon'
-import SearchSimple from '../components/SearchSimple.vue'
-import ResultSimple from '../components/ResultSimple.vue'
+import PokemonSearch from '../components/PokemonSearch.vue'
+import PokemonResultSimple from '../components/PokemonResultSimple.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -30,13 +30,13 @@ function handleSearch(pokemon: Pokemon | null) {
 <template>
   <main>
     <h1>Recherche Pokémon</h1>
-    <SearchSimple 
+    <PokemonSearch 
       :id="(route.query.id as string)" 
       :name="(route.query.name as string)"
       @result="handleSearch"
     />
 
-    <ResultSimple :result="result" />
+    <PokemonResultSimple :result="result" />
   </main>
 </template>
 

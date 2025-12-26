@@ -2,8 +2,8 @@
 import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { Pokemon, PokemonType } from '../types/pokemon'
-import SearchByType from '../components/SearchByType.vue'
-import ResultsMultiple from '../components/ResultsMultiple.vue'
+import PokemonSearchByType from '../components/PokemonSearchByType.vue'
+import PokemonResultMultiple from '../components/PokemonResultMultiple.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -26,7 +26,7 @@ function handleTypeSelected(types: { type1: PokemonType | null; type2: PokemonTy
 <template>
   <main>
     <h1>Recherche avancée</h1>
-    <SearchByType 
+    <PokemonSearchByType 
       :type="(route.query.type as string)"
       :type1="(route.query.type1 as string)"
       :type2="(route.query.type2 as string)"
@@ -34,7 +34,7 @@ function handleTypeSelected(types: { type1: PokemonType | null; type2: PokemonTy
       @type-selected="handleTypeSelected"
     />
 
-    <ResultsMultiple :results="results" />
+    <PokemonResultMultiple :results="results" />
   </main>
 </template>
 
