@@ -19,7 +19,7 @@ onMounted(() => {
         <p>Explorez le monde des Pokémon</p>
         <div class="buttons">
           <RouterLink to="/search" class="btn">Recherche simple</RouterLink>
-          <RouterLink to="/search-by-type" class="btn">Recherche avancée</RouterLink>
+          <RouterLink to="/search-advanced" class="btn">Recherche avancée</RouterLink>
           <RouterLink to="/create-team" class="btn btn-secondary">Créer une équipe</RouterLink>
         </div>
       </div>

@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import SearchView from '../views/SearchView.vue'
-import SearchByTypeView from '../views/SearchByTypeView.vue'
+import SearchAdvancedView from '../views/SearchAdvancedView.vue'
 import PokemonView from '../views/PokemonView.vue'
 import CreateTeamView from '../views/CreateTeamView.vue'
 import CreateTeamAddPokemonView from '../views/CreateTeamAddPokemonView.vue'
@@ -21,9 +21,9 @@ const router = createRouter({
       component: SearchView,
     },
     {
-      path: '/search-by-type',
-      name: 'searchByType',
-      component: SearchByTypeView,
+      path: '/search-advanced',
+      name: 'SearchAdvancedView',
+      component: SearchAdvancedView,
     },
     {
       path: '/pokemon/:id',

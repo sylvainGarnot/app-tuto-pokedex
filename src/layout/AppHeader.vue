@@ -3,7 +3,7 @@
     <nav>
       <RouterLink to="/">Home</RouterLink>
       <RouterLink to="/search">Recherche</RouterLink>
-      <RouterLink to="/search-by-type">Recherche Avancée</RouterLink>
+      <RouterLink to="/search-advanced">Recherche Avancée</RouterLink>
     </nav>
   </header>
 </template>
