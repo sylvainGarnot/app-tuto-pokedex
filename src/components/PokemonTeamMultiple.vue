@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { RouterLink } from 'vue-router'
 import type { PokemonTeam } from '../types/pokemon'
 
 defineProps<{
@@ -12,7 +13,12 @@ defineProps<{
       Aucune équipe créée
     </div>
     <div v-else class="teams-grid">
-      <div v-for="team in teams" :key="team.id" class="team-card">
+      <RouterLink
+        v-for="team in teams"
+        :key="team.id"
+        :to="`/team/${team.id}`"
+        class="team-card"
+      >
         <div class="team-header">
           <h3>{{ team.name }}</h3>
         </div>
@@ -26,7 +32,7 @@ defineProps<{
             <img :src="pokemon.sprite" :alt="pokemon.name" />
           </div>
         </div>
-      </div>
+      </RouterLink>
     </div>
   </div>
 </template>
@@ -59,6 +65,9 @@ defineProps<{
   padding: 0.75rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.2s;
+  text-decoration: none;
+  color: inherit;
+  display: block;
 }
 
 .team-card:hover {
