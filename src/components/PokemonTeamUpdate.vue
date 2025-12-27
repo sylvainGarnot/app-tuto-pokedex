@@ -67,20 +67,6 @@ function removePokemon(pokemonId: number) {
       <p><strong>Créée le :</strong> {{ formatDate(team.createdAt) }}</p>
     </div>
 
-    <!-- Recherche et résultat -->
-    <div class="search-section" v-if="team.pokemons.length < 6">
-      <h2>Rechercher un Pokémon</h2>
-      <PokemonSearch @result="handleSearchResult" />
-      
-      <div v-if="alertMessage" class="success-message">{{ alertMessage }}</div>
-      <div v-if="searchResult" class="search-result-wrapper">
-        <PokemonResultSimple :result="searchResult" />
-        <button @click="addPokemonToTeam" class="add-button">
-          Ajouter
-        </button>
-      </div>
-    </div>
-
     <!-- Équipe actuelle -->
     <div class="team-section">
       <h2>Mon équipe ({{ team.pokemons.length }}/{{ maxPokemons ?? 6 }})</h2>
@@ -96,6 +82,20 @@ function removePokemon(pokemonId: number) {
             ✕ Retirer
           </button>
         </div>
+      </div>
+    </div>
+
+    <!-- Recherche et résultat -->
+    <div class="search-section" v-if="team.pokemons.length < 6">
+      <h2>Rechercher un Pokémon</h2>
+      <PokemonSearch @result="handleSearchResult" />
+      
+      <div v-if="alertMessage" class="success-message">{{ alertMessage }}</div>
+      <div v-if="searchResult" class="search-result-wrapper">
+        <PokemonResultSimple :result="searchResult" />
+        <button @click="addPokemonToTeam" class="add-button">
+          Ajouter
+        </button>
       </div>
     </div>
   </div>

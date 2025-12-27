@@ -1,24 +1,32 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import type { Pokemon, PokemonType } from '../types/pokemon'
 
+
+// PROPS
 const props = defineProps({
   type: String,
   type1: String,
   type2: String,
 })
 
+
+// EMITS
 const emit = defineEmits<{
   result: [result: Pokemon[]]
   'type-selected': [types: { type1: PokemonType | null; type2: PokemonType | null }]
 }>()
 
+
+// DATA
 const apiTypes = ref<PokemonType[]>([])
 const inputType1 = ref<PokemonType | null>(null)
 const inputType2 = ref<PokemonType | null>(null)
 const loading = ref(false)
 const error = ref('')
 
+
+// ON MOUNTED
 onMounted(() => {
   getApiTypes().then(() => {
     if (props.type) {
@@ -41,6 +49,18 @@ onMounted(() => {
   })
 })
 
+
+// WATCHERS
+watch(() => inputType1.value, () => {
+  searchByType()
+})
+
+watch(() => inputType2.value, () => {
+  searchByType()
+})
+
+
+// FUNCTIONS
 function getApiTypes(): Promise<void> {
   return fetch('https://pokebuildapi.fr/api/v1/types')
     .then((response) => response.json())
@@ -54,7 +74,7 @@ function getApiTypes(): Promise<void> {
 
 function searchByType() {
   if (!inputType1.value && !inputType2.value) {
-    error.value = 'Veuillez sélectionner au moins un type'
+    emit('result', [])
     return
   }
 
@@ -134,10 +154,8 @@ function searchByType() {
         <img v-if="inputType2?.image" :src="inputType2.image" :alt="inputType2.name" class="type-image" />
       </div>
     </div>
-    <button class="search-button" @click="searchByType" :disabled="loading">
-      {{ loading ? 'Recherche...' : 'Rechercher' }}
-    </button>
     <div v-if="error" class="error">{{ error }}</div>
+    <div v-if="loading" class="load">Chargement...</div>
   </div>
 </template>
 
@@ -190,26 +208,5 @@ label {
   height: 50px;
   object-fit: contain;
   border-radius: 4px;
-}
-
-.search-button {
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  background-color: #42b983;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  white-space: nowrap;
-}
-
-.search-button:hover {
-  background-color: #369970;
-}
-
-.search-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
 }
 </style>
