@@ -78,6 +78,20 @@ export const useTeamStore = defineStore('team', () => {
       })
   }
 
+  function apiDeleteTeam(teamId: string) {
+    return axios.delete(`http://localhost:3000/teams/${teamId}`)
+      .then(() => {
+        teams.value = teams.value.filter(team => team.id !== teamId)
+        if (currentTeam.value?.id === teamId) {
+          clearCurrentTeam()
+        }
+      })
+      .catch(error => {
+        console.error('Erreur:', error)
+        throw error
+      })
+  }
+
   function clearCurrentTeam() {
     currentTeam.value = null
   }
@@ -90,6 +104,7 @@ export const useTeamStore = defineStore('team', () => {
     removeCurrentTeamPokemon,
     apiPostTeam,
     apiGetTeams,
+    apiDeleteTeam,
     clearCurrentTeam,
   }
 })
