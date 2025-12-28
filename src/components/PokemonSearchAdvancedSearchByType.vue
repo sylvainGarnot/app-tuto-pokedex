@@ -5,7 +5,6 @@ import type { Pokemon, PokemonType } from '../types/pokemon'
 
 // PROPS
 const props = defineProps({
-  type: String,
   type1: String,
   type2: String,
 })
@@ -13,55 +12,40 @@ const props = defineProps({
 
 // EMITS
 const emit = defineEmits<{
-  result: [result: Pokemon[]]
-  'type-selected': [types: { type1: PokemonType | null; type2: PokemonType | null }]
+  'search': [Pokemon[]]
+  'update:type1': [string]
+  'update:type2': [string]
 }>()
 
 
 // DATA
 const apiTypes = ref<PokemonType[]>([])
-const inputType1 = ref<PokemonType | null>(null)
-const inputType2 = ref<PokemonType | null>(null)
 const loading = ref(false)
 const error = ref('')
 
 
 // ON MOUNTED
 onMounted(() => {
-  getApiTypes().then(() => {
-    if (props.type) {
-      const foundType = apiTypes.value.find((t) => t.name.toLowerCase() === props.type?.toLowerCase())
-      if (foundType) inputType1.value = foundType
-    } else {
-      if (props.type1) {
-        const foundType1 = apiTypes.value.find((t) => t.name.toLowerCase() === props.type1?.toLowerCase())
-        if (foundType1) inputType1.value = foundType1
-      }
-      if (props.type2) {
-        const foundType2 = apiTypes.value.find((t) => t.name.toLowerCase() === props.type2?.toLowerCase())
-        if (foundType2) inputType2.value = foundType2
-      }
-    }
+  getApiTypes()
+  //   .then(() => {
+  //   if (props.type1) {
+  //     const foundType1 = apiTypes.value.find((t) => t.name.toLowerCase() === props.type1?.toLowerCase())
+  //     if (foundType1) emit('update:type1', foundType1.name)
+  //   }
+  //   if (props.type2) {
+  //     const foundType2 = apiTypes.value.find((t) => t.name.toLowerCase() === props.type2?.toLowerCase())
+  //     if (foundType2) emit('update:type2', foundType2.name)
+  //   }
 
-    if (inputType1.value || inputType2.value) {
-      searchByType()
-    }
-  })
-})
-
-
-// WATCHERS
-watch(() => inputType1.value, () => {
-  searchByType()
-})
-
-watch(() => inputType2.value, () => {
-  searchByType()
+  //   if (props.type1 || props.type2) {
+  //     searchByType()
+  //   }
+  // })
 })
 
 
 // FUNCTIONS
-function getApiTypes(): Promise<void> {
+function getApiTypes() {
   return fetch('https://pokebuildapi.fr/api/v1/types')
     .then((response) => response.json())
     .then((data) => {
@@ -73,19 +57,18 @@ function getApiTypes(): Promise<void> {
 }
 
 function searchByType() {
-  if (!inputType1.value && !inputType2.value) {
-    emit('result', [])
+  if (!props.type1 && !props.type2) {
+    emit('search', [])
     return
   }
 
   loading.value = true
-  emit('type-selected', { type1: inputType1.value, type2: inputType2.value })
 
   let url: string
-  if (inputType1.value && inputType2.value) {
-    url = `https://pokebuildapi.fr/api/v1/pokemon/types/${inputType1.value.name}/${inputType2.value.name}`
+  if (props.type1 && props.type2) {
+    url = `https://pokebuildapi.fr/api/v1/pokemon/types/${props.type1}/${props.type2}`
   } else {
-    url = `https://pokebuildapi.fr/api/v1/pokemon/type/${inputType1.value?.name}`
+    url = `https://pokebuildapi.fr/api/v1/pokemon/type/${props.type1}`
   }
 
   fetch(url)
@@ -105,16 +88,27 @@ function searchByType() {
             })),
           })         
       }
-      emit('result', result)
+      emit('search', result)
     })
     .catch(() => {
       error.value = 'Erreur lors de la recherche'
-      emit('result', [])
+      emit('search', [])
     })
     .finally(() => {
       loading.value = false
     })
 }
+
+
+// WATCHERS
+watch(() => props.type1, () => {
+  searchByType()
+})
+
+watch(() => props.type2, () => {
+  searchByType()
+})
+
 </script>
 
 <template>
@@ -124,16 +118,16 @@ function searchByType() {
       <div class="input-with-button">
         <select
           id="type1"
-          v-model="inputType1"
+          :value="props.type1"
+          @change="emit('update:type1', ($event.target as HTMLSelectElement).value)"
           class="search-input"
-          @keyup.enter="searchByType"
         >
           <option value="">Sélectionnez un type...</option>
-          <option v-for="type in apiTypes" :key="type.name" :value="type">
+          <option v-for="type in apiTypes" :key="type.name" :value="type.name">
             {{ type.name }}
           </option>
         </select>
-        <img v-if="inputType1?.image" :src="inputType1.image" :alt="inputType1.name" class="type-image" />
+        <img v-if="props.type1" :src="apiTypes.find(t => t.name === props.type1)?.image" :alt="props.type1" class="type-image" />
       </div>
     </div>
     <div class="input-group">
@@ -141,17 +135,17 @@ function searchByType() {
       <div class="input-with-button">
         <select
           id="type2"
-          v-model="inputType2"
+          :value="props.type2"
+          @change="emit('update:type2', ($event.target as HTMLSelectElement).value)"
           class="search-input"
-          :disabled="!inputType1"
-          @keyup.enter="searchByType"
+          :disabled="!props.type1"
         >
           <option value="">Sélectionnez un type...</option>
-          <option v-for="type in apiTypes" :key="type.name" :value="type">
+          <option v-for="type in apiTypes" :key="type.name" :value="type.name">
             {{ type.name }}
           </option>
         </select>
-        <img v-if="inputType2?.image" :src="inputType2.image" :alt="inputType2.name" class="type-image" />
+        <img v-if="props.type2" :src="apiTypes.find(t => t.name === props.type2)?.image" :alt="props.type2" class="type-image" />
       </div>
     </div>
     <div v-if="error" class="error">{{ error }}</div>

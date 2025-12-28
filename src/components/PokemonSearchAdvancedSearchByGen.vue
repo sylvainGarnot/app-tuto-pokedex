@@ -11,8 +11,8 @@ const props = defineProps({
 
 // EMITS
 const emit = defineEmits<{
-  result: [result: Pokemon[]]
-  'generation-selected': [generation: string | null]
+  'search': [Pokemon[]]
+  'update:generation': [string]
 }>()
 
 
@@ -44,13 +44,13 @@ watch(() => selectedGeneration.value, () => {
 // FUNCTIONS
 function searchByGeneration() {
   if (!selectedGeneration.value) {
-    emit('result', [])
+    emit('search', [])
     return
   }
 
   loading.value = true
   error.value = ''
-  emit('generation-selected', selectedGeneration.value)
+  emit('update:generation', selectedGeneration.value)
 
   const url = `https://pokebuildapi.fr/api/v1/pokemon/generation/${selectedGeneration.value}`
 
@@ -71,11 +71,11 @@ function searchByGeneration() {
           })),
         })
       }
-      emit('result', result)
+      emit('search', result)
     })
     .catch(() => {
       error.value = 'Erreur lors de la recherche'
-      emit('result', [])
+      emit('search', [])
     })
     .finally(() => {
       loading.value = false

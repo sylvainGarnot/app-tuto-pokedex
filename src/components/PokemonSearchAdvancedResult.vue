@@ -3,15 +3,15 @@ import { RouterLink } from 'vue-router'
 import type { Pokemon } from '../types/pokemon'
 
 defineProps<{
-  results: Pokemon[]
+  pokemons: Pokemon[]
 }>()
 </script>
 
 <template>
-  <div v-if="results.length > 0" class="results-list">
-    <h2>{{ results.length }} Pokémon trouvé(s)</h2>
+  <div v-if="pokemons.length > 0" class="results-list">
+    <h2>{{ pokemons.length }} Pokémon trouvé(s)</h2>
     <div class="pokemon-grid">
-      <RouterLink v-for="pokemon in results" :key="pokemon.id" :to="`/pokemon/${pokemon.id}`" class="pokemon-item">
+      <RouterLink v-for="pokemon in pokemons" :key="pokemon.id" :to="`/pokemon/${pokemon.id}`" class="pokemon-item">
         <span class="pokemon-id">{{ pokemon.id }}</span>
         <span class="pokemon-name">{{ pokemon.name }}</span>
         <img v-if="pokemon.sprite" :src="pokemon.sprite" :alt="pokemon.name" class="pokemon-sprite" />
