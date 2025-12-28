@@ -3,8 +3,9 @@ import HomeView from '../views/HomeView.vue'
 import SearchView from '../views/SearchView.vue'
 import SearchAdvancedView from '../views/SearchAdvancedView.vue'
 import PokemonView from '../views/PokemonView.vue'
-import CreateTeamView from '../views/CreateTeamView.vue'
-import CreateTeamAddPokemonView from '../views/CreateTeamAddPokemonView.vue'
+import CreateTeamNameView from '../views/CreateTeamView/NameView.vue'
+import CreateTeamAddPokemonView from '../views/CreateTeamView/AddPokemonView.vue'
+import CreateTeamResumeView from '../views/CreateTeamView/ResumeView.vue'
 import PokemonTeamView from '../views/PokemonTeamView.vue'
 
 const router = createRouter({
@@ -32,13 +33,23 @@ const router = createRouter({
     },
     {
       path: '/create-team',
-      name: 'createTeam',
-      component: CreateTeamView,
-    },
-    {
-      path: '/create-team/add-pokemon/',
-      name: 'createTeamAddPokemon',
-      component: CreateTeamAddPokemonView,
+      children: [
+        {
+          path: '',
+          name: 'createTeamName',
+          component: CreateTeamNameView,
+        },
+        {
+          path: 'add-pokemon',
+          name: 'createTeamAddPokemon',
+          component: CreateTeamAddPokemonView,
+        },
+        {
+          path: 'resume',
+          name: 'createTeamResume',
+          component: CreateTeamResumeView,
+        },
+      ],
     },
     {
       path: '/team/:id',

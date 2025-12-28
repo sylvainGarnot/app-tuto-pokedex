@@ -2,8 +2,8 @@
 import { ref } from 'vue'
 import { formatDate } from '../utils/dateFormatter'
 import type { Pokemon, PokemonTeam } from '../types/pokemon'
-import PokemonSearch from './PokemonSearch.vue'
-import PokemonResultSimple from './PokemonResultSimple.vue'
+import PokemonSearch from './PokemonSearchSimpleSearch.vue'
+import PokemonResultSimple from './PokemonSearchSimpleResult.vue'
 
 
 // PROPS

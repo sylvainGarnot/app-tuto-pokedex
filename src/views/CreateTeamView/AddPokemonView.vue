@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { useTeamStore } from '../stores/teamStore'
-import PokemonTeamUpdate from '../components/PokemonTeamUpdate.vue'
-import type { Pokemon } from '../types/pokemon'
+import { useTeamStore } from '@/stores/teamStore'
+import PokemonTeamUpdate from '@/components/PokemonTeamUpdate.vue'
+import type { Pokemon } from '@/types/pokemon'
 
 const router = useRouter()
 const teamStore = useTeamStore()
@@ -20,18 +20,6 @@ function removePokemon(pokemonId: number) {
   teamStore.removeCurrentTeamPokemon(pokemonId)
 }
 
-async function saveTeam() {
-  if (!currentTeam.value) return
-  
-  try {
-    await teamStore.apiPostTeam(currentTeam.value)
-    router.push({ name: 'home' })
-  } catch {
-    // Gérer l'erreur de sauvegarde
-  } finally {
-    // loading state if needed
-  }
-}
 </script>
 
 <template>
@@ -45,10 +33,10 @@ async function saveTeam() {
 
     <button 
       v-if="currentTeam"
-      @click="saveTeam" 
+      @click="router.push({ name: 'createTeamResume' })" 
       class="save-team-button"
     >
-      Sauvegarder l'équipe
+      Résumé
     </button>
   </main>
 </template>
