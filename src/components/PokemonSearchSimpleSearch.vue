@@ -2,17 +2,21 @@
 import { ref, watch, onMounted } from 'vue'
 import type { Pokemon, PokemonType } from '../types/pokemon'
 
-// VARIABLES D'ETAT
+// DATA
 const inputId = ref('')
 const inputName = ref('')
 const loading = ref(false)
 const error = ref('')
 
+
+// PROPS
 const props = defineProps({
   id: String,
   name: String,
 })
 
+
+// EMITS
 const emit = defineEmits<{
   result: [results: Pokemon | null]
 }>()

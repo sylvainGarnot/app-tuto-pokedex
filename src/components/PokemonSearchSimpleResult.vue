@@ -3,19 +3,19 @@ import { RouterLink } from 'vue-router'
 import type { Pokemon } from '../types/pokemon'
 
 defineProps<{
-  result: Pokemon | null
+  pokemon: Pokemon | null
 }>()
 </script>
 
 <template>
-  <div v-if="result" class="result">
-    <RouterLink :to="`/pokemon/${result.id}`" class="pokemon-card-link">
+  <div v-if="pokemon" class="result">
+    <RouterLink :to="`/pokemon/${pokemon.id}`" class="pokemon-card-link">
       <div class="pokemon-card">
-        <span class="pokemon-id">{{ result.id }}</span>
-        <span class="pokemon-name">{{ result.name }}</span>
-        <img v-if="result.sprite" :src="result.sprite" :alt="result.name" class="pokemon-sprite" />
-        <div v-if="result.types && result.types.length > 0" class="types-icons">
-          <img v-for="type in result.types" :key="type.name" :src="type.image" :alt="type.name" class="type-icon" />
+        <span class="pokemon-id">{{ pokemon.id }}</span>
+        <span class="pokemon-name">{{ pokemon.name }}</span>
+        <img v-if="pokemon.sprite" :src="pokemon.sprite" :alt="pokemon.name" class="pokemon-sprite" />
+        <div v-if="pokemon.types && pokemon.types.length > 0" class="types-icons">
+          <img v-for="type in pokemon.types" :key="type.name" :src="type.image" :alt="type.name" class="type-icon" />
         </div>
       </div>
     </RouterLink>
