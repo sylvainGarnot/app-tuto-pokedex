@@ -18,7 +18,7 @@ const props = defineProps({
 
 // EMITS
 const emit = defineEmits<{
-  result: [results: Pokemon | null]
+  'search': [Pokemon | null]
 }>()
 
 
@@ -75,11 +75,11 @@ function searchPokemon() {
           image: type.image,
         })),
       }
-      emit('result', results)
+      emit('search', results)
     })
     .catch(() => {
       error.value = 'Erreur lors de la recherche'
-      emit('result', null)
+      emit('search', null)
     })
     .finally(() => {
       loading.value = false

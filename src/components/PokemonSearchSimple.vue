@@ -14,19 +14,19 @@ const props = defineProps({
 
 // EMITS
 const emit = defineEmits<{
-  'update:name': [name: string]
+  'update:name': [string]
 }>()
 
 
 // DATA
-const pokemon = ref<Pokemon | null>(null)
+const result = ref<Pokemon | null>(null)
 
 
 // FUNCTIONS
-function handleUpdate(result: Pokemon | null) {
-  pokemon.value = result
-  if (result) {
-    emit('update:name', result.name)
+function handleSearch(newResult: Pokemon | null) {
+  result.value = newResult
+  if (result.value) {
+    emit('update:name', result.value.name)
   } else {
     emit('update:name', '')
   }
@@ -36,8 +36,8 @@ function handleUpdate(result: Pokemon | null) {
 
 <template>
   <main>
-    <PokemonSearchSimpleSearch :id="props.id" :name="props.name" @result="handleUpdate" />
-    <PokemonSearchSimpleResult v-if="pokemon && pokemon.id" :pokemon="pokemon" />
+    <PokemonSearchSimpleSearch :id="props.id" :name="props.name" @search="handleSearch" />
+    <PokemonSearchSimpleResult v-if="result && result.id" :pokemon="result" />
   </main>
 </template>
 
