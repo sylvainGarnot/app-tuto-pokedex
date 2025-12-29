@@ -1,85 +1,87 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue';
 import { formatDate } from '../utils/dateFormatter'
-import type { Pokemon, PokemonTeam } from '../types/pokemon'
-import PokemonSearch from './PokemonSearchSimpleSearch.vue'
+import type { Pokemon, PokemonTeam, PokemonType } from '../types/pokemon'
 import PokemonSearchSimpleResult from './PokemonSearchSimpleResult.vue'
+import axios from 'axios'
+import { useTeamStore } from '../stores/teamStore'
+const teamStore = useTeamStore()
 
 
 // PROPS
 const props = defineProps<{
-  team: PokemonTeam
-  maxPokemons?: number
+  id: string
 }>()
 
 
-// EMITS
-const emit = defineEmits<{
-  addPokemon: [pokemon: Pokemon]
-  remove: [pokemonId: number]
-}>()
+// REF
+const team = ref<PokemonTeam>({
+  id: '',
+  name: 'Inconnue',
+  subname: 'Inconnue',
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+  pokemons: [] as Pokemon[],
+} as PokemonTeam)
 
 
-// DATA
-const searchResult = ref<Pokemon | null>(null)
-const alertMessage = ref('')
+// MOUNTED
+onMounted(() => {
+  apiGetTeam()
+})
 
 
 // FUNCTIONS
-function handleSearchResult(result: Pokemon | null) {
-  searchResult.value = result
-  alertMessage.value = ''
-}
-
-function addPokemonToTeam() {
-  if (!searchResult.value || !props.team) return
-
-  if (props.team.pokemons.length >= (props.maxPokemons ?? 6)) {
-    alertMessage.value = 'Équipe complète (6 Pokémons max)'
-    return
-  }
-
-  if (props.team.pokemons.some(p => p.id === searchResult?.value?.id)) {
-    alertMessage.value = 'Ce Pokémon est déjà dans l\'équipe'
-    return
-  }
-
-  emit('addPokemon', searchResult.value)
-  alertMessage.value = `${searchResult.value.name} ajouté à l'équipe!`
-  searchResult.value = null
-  setTimeout(() => {
-    alertMessage.value = ''
-  }, 2500)
-}
-
-function removePokemon(pokemonId: number) {
-  emit('remove', pokemonId)
-}
-
-
-async function handleDeleteTeam() {
-  try {
-    await teamStore.apiDeleteTeam(team.value!.id)
-    router.push({ name: 'home' })
-  } catch {
-    alert('Erreur lors de la suppression de l\'équipe')
+function apiGetTeam() {
+  const foundTeam = teamStore.teams.find(t => t.id === props.id)
+  if (foundTeam) {
+    console.log('Team trouvée dans le store:')
+    team.value = foundTeam as PokemonTeam
+  } else {
+    console.log('Récupération de l\'équipe depuis l\'API...')
+    axios.get('http://localhost:3000/teams/' + props.id)
+      .then(response => {
+        team.value = {
+          id: response.data.id,
+          name: response.data.name,
+          subname: response.data.subname,
+          createdAt: response.data.createdAt,
+          updatedAt: response.data.updatedAt,
+          pokemons: response.data.pokemons.map((pokemon: Pokemon) => ({
+            id: pokemon.id,
+            pokedexId: pokemon.pokedexId,
+            name: pokemon.name,
+            image: pokemon.image,
+            sprite: pokemon.sprite,
+            types: pokemon.types.map((type: PokemonType) => ({
+              name: type.name,
+              image: type.image,
+            })),
+          })),
+        } as PokemonTeam
+      })
+      .catch(error => {
+        console.error('Erreur:', error)
+      })
   }
 }
+
+
 </script>
 
 <template>
   <div class="team-wrapper">
     <!-- Informations de l'équipe -->
     <div class="team-info">
-      <h1>Ajouter des Pokémons à {{ team.name }}</h1>
-      <p><strong>Nom :</strong> {{ team.name }}</p>
+      <h1>Équipe {{ team.name }}</h1>
       <p v-if="team.subname"><strong>Sous-titre :</strong> {{ team.subname }}</p>
       <p><strong>Créée le :</strong> {{ formatDate(team.createdAt) }}</p>
+      <p v-if="team.updatedAt"><strong>Dernier update :</strong> {{ formatDate(team.updatedAt) }}</p>
     </div>
 
     <!-- Équipe actuelle -->
     <div class="team-section">
-      <h2>Mon équipe ({{ team.pokemons.length }}/{{ maxPokemons ?? 6 }})</h2>
+      <h2>Mon équipe ({{ team.pokemons.length }}/ 6)</h2>
 
       <div class="pokemons-container">
         <div v-if="team.pokemons.length === 0" class="empty-message">
@@ -88,27 +90,7 @@ async function handleDeleteTeam() {
 
         <div v-for="pokemon in team.pokemons" :key="pokemon.id" class="pokemon-wrapper">
           <PokemonSearchSimpleResult :pokemon="pokemon" />
-          <button @click="removePokemon(pokemon.id)" class="remove-button">
-            ✕ Retirer
-          </button>
         </div>
-      </div>
-    </div>
-
-    <button @click="handleDeleteTeam" class="delete-button" title="Supprimer cette équipe">🗑️</button>
-
-
-    <!-- Recherche et résultat -->
-    <div class="search-section" v-if="team.pokemons.length < 6">
-      <h2>Rechercher un Pokémon</h2>
-      <PokemonSearch @result="handleSearchResult" />
-      
-      <div v-if="alertMessage" class="success-message">{{ alertMessage }}</div>
-      <div v-if="searchResult" class="search-result-wrapper">
-        <PokemonSearchSimpleResult :pokemon="searchResult" />
-        <button @click="addPokemonToTeam" class="add-button">
-          Ajouter
-        </button>
       </div>
     </div>
   </div>

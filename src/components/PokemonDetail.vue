@@ -1,31 +1,56 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import type { Pokemon, PokemonType } from '../types/pokemon'
+import { useTeamStore } from '../stores/teamStore'
+const teamStore = useTeamStore()
 
+
+// PROPS
 const props = defineProps<{
   id: string
 }>()
 
-const pokemon = ref<Pokemon | null>(null)
+
+// REF
+const pokemon = ref<Pokemon | null>({
+  id: 0,
+  pokedexId: 0,
+  name: '',
+  image: '',
+  sprite: '',
+  types: [] as PokemonType[],
+} as Pokemon | null)
 const loading = ref(true)
 const error = ref('')
 
-onMounted(() => {
-  if (!props.id) {
-    error.value = 'ID du Pokémon non fourni'
-    loading.value = false
-    return
-  }
 
-  fetchPokemon(props.id)
+// MOUNTED
+onMounted(() => {
+  apiGetPokemon()
 })
 
-function fetchPokemon(id: string) {
-  fetch(`https://pokebuildapi.fr/api/v1/pokemon/${id}`)
+
+// FUNCTION
+function apiGetPokemon() {
+  loading.value = true
+
+  for (const team of teamStore.teams) {
+    const foundInTeam = team.pokemons.find((p: Pokemon) => p.id.toString() === props.id)
+    if (foundInTeam) {
+      console.log('Pokemon trouvé dans le store:', foundInTeam.name)
+      pokemon.value = foundInTeam
+      loading.value = false
+      return
+    }
+  }
+
+  // Si non trouvé dans le store, fetch depuis l'API
+  fetch(`https://pokebuildapi.fr/api/v1/pokemon/${props.id}`)
     .then((response) => {
       return response.json()
     })
     .then((data) => {
+      console.log('Pokemon récupéré depuis l\'API:')
       pokemon.value = {
         id: data.id,
         pokedexId: data.pokedexId,
@@ -37,11 +62,10 @@ function fetchPokemon(id: string) {
           image: type.image,
         })),
       }
-      error.value = ''
     })
-    .catch(() => {
+    .catch((error) => {
       error.value = 'Erreur lors du chargement du Pokémon'
-      pokemon.value = null
+      console.error('Erreur:', error)
     })
     .finally(() => {
       loading.value = false

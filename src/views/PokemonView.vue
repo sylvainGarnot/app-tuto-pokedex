@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router'
-import PokemonResultDetail from '../components/PokemonResultDetail.vue'
+import PokemonDetail from '../components/PokemonDetail.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -13,7 +13,7 @@ function goBack() {
 <template>
   <main>
     <button class="back-button" @click="goBack">← Retour</button>
-    <PokemonResultDetail :id="route.params.id as string" />
+    <PokemonDetail :id="(route.params.id as string)" />
   </main>
 </template>
 

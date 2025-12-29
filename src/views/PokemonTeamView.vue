@@ -1,42 +1,17 @@
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router'
-import { onMounted, ref } from 'vue'
-import { useTeamStore } from '../stores/teamStore'
-import type { PokemonTeam } from '../types/pokemon'
-import PokemonTeamUpdate from '../components/PokemonTeamUpdate.vue'
+import { useRoute } from 'vue-router'
+import PokemonTeamDetail from '../components/PokemonTeamDetail.vue'
 
 const route = useRoute()
-const router = useRouter()
-const teamStore = useTeamStore()
-const team = ref<PokemonTeam | null>(null)
 
-onMounted(() => {
-  const teamId = route.params.id as string
-  
-  const foundTeam = teamStore.teams.find(t => t.id === teamId)
-  if (foundTeam) {
-    team.value = foundTeam
-  }
-})
-
-async function handleDeleteTeam() {
-  try {
-    await teamStore.apiDeleteTeam(team.value!.id)
-    router.push({ name: 'home' })
-  } catch {
-    alert('Erreur lors de la suppression de l\'équipe')
-  }
-}
 </script>
 
 <template>
   <main>
-    <PokemonTeamUpdate 
-      v-if="team" 
-      :team="team"
+    <PokemonTeamDetail
+      v-if="route.params.id" 
+      :id="(route.params.id as string)"
     />
-    <button @click="handleDeleteTeam" class="delete-button" title="Supprimer cette équipe">🗑️</button>
-
   </main>
 </template>
 
