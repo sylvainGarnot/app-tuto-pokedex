@@ -1,16 +1,26 @@
 <template>
-  <AppHeader />
-  <RouterView />
-  <AppFooter />
+  <TheHeader />
+  <main id="main-content">
+    <RouterView />
+  </main>
+  <TheFooter />
 </template>
 
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import AppHeader from './layout/AppHeader.vue'
-import AppFooter from './layout/AppFooter.vue'
+import TheHeader from './layout/TheHeader.vue'
+import TheFooter from './layout/TheFooter.vue'
 </script>
 
 
 
-<style scoped>
+<style scoped lang="scss">
+#main-content {
+  padding: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
+}
 </style>

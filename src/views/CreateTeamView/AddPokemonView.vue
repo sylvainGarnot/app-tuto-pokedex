@@ -41,18 +41,7 @@ function removePokemon(pokemonId: number) {
   </main>
 </template>
 
-<style scoped>
-main {
-  padding: 2rem;
-  padding-bottom: 4rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  margin-bottom: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
+<style scoped lang="scss">
 .save-team-button {
   padding: 1rem;
   background-color: #42b983;
@@ -65,10 +54,10 @@ main {
   transition: background-color 0.2s;
   width: fit-content;
   align-self: flex-end;
-}
-
-.save-team-button:hover:not(:disabled) {
-  background-color: #369970;
+  
+  &:hover:not(:disabled) {
+    background-color: #369970;
+  }
 }
 
 </style>

@@ -37,8 +37,6 @@ function createTeam() {
 
 <template>
   <main>
-    <h1>Créer une nouvelle équipe</h1>
-
     <div class="form-container">
       <form @submit.prevent="createTeam" class="team-form">
         <div class="form-group">
@@ -74,20 +72,6 @@ function createTeam() {
 </template>
 
 <style scoped>
-main {
-  padding: 2rem;
-  max-width: 600px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-}
-
-main h1 {
-  text-align: center;
-  color: #333;
-  margin-bottom: 2rem;
-  font-size: 2rem;
-}
 
 .form-container {
   background-color: white;
@@ -169,15 +153,5 @@ main h1 {
 .submit-button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
-}
-
-@media (max-width: 600px) {
-  main {
-    padding: 1rem;
-  }
-
-  main h1 {
-    font-size: 1.5rem;
-  }
 }
 </style>

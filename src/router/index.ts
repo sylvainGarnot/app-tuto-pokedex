@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import SearchView from '../views/SearchView.vue'
 import SearchAdvancedView from '../views/SearchAdvancedView.vue'
 import PokemonView from '../views/PokemonView.vue'
+import CreateTeamView from '../views/CreateTeamView.vue'
 import CreateTeamNameView from '../views/CreateTeamView/NameView.vue'
 import CreateTeamAddPokemonView from '../views/CreateTeamView/AddPokemonView.vue'
 import CreateTeamResumeView from '../views/CreateTeamView/ResumeView.vue'
@@ -33,6 +34,7 @@ const router = createRouter({
     },
     {
       path: '/create-team',
+      component: CreateTeamView,
       children: [
         {
           path: '',

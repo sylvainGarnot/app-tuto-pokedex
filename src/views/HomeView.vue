@@ -33,81 +33,58 @@ onMounted(() => {
   </main>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 main {
-  padding: 2rem;
-}
+  .content {
+    display: flex;
+    gap: 2rem;
 
-h1 {
-  color: #333;
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-  text-align: left;
-}
+    .left-section {
+      flex: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
 
-p {
-  color: #666;
-  font-size: 1.2rem;
-  margin-bottom: 2rem;
-  text-align: left;
-}
+      .buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
 
-.content {
-  display: flex;
-  gap: 2rem;
-}
+      .btn {
+        display: inline-block;
+        padding: 0.75rem 2rem;
+        background-color: #42b983;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: background-color 0.2s;
+        white-space: nowrap;
+      }
 
-.left-section {
-  flex: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-}
+      .btn:hover {
+        background-color: #369970;
+      }
 
-.buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
+      .btn-secondary {
+        background-color: #5a7eff;
+      }
 
-.btn {
-  display: inline-block;
-  padding: 0.75rem 2rem;
-  background-color: #42b983;
-  color: white;
-  text-decoration: none;
-  border-radius: 4px;
-  transition: background-color 0.2s;
-  white-space: nowrap;
-}
+      .btn-secondary:hover {
+        background-color: #4a6eef;
+      }
+    }
+  }
 
-.btn:hover {
-  background-color: #369970;
-}
+  .right-section {
+    flex: 1;
 
-.btn-secondary {
-  background-color: #5a7eff;
-}
-
-.btn-secondary:hover {
-  background-color: #4a6eef;
-}
-
-.right-section {
-  flex: 1;
-}
-
-.teams-section {
-  margin-top: 0;
-  padding-top: 0;
-  border-top: none;
-}
-
-.teams-section h2 {
-  color: #333;
-  font-size: 1.8rem;
-  margin-bottom: 1.5rem;
-  text-align: left;
+    .teams-section {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: none;
+    }
+  }
 }
 </style>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
 import PokemonTeamDetail from '../components/PokemonTeamDetail.vue'
+import AppButtonBack from '@/layout/AppButtonBack.vue'
 
 const route = useRoute()
 
@@ -8,6 +9,7 @@ const route = useRoute()
 
 <template>
   <main>
+    <AppButtonBack />
     <PokemonTeamDetail
       v-if="route.params.id" 
       :id="(route.params.id as string)"
@@ -15,11 +17,7 @@ const route = useRoute()
   </main>
 </template>
 
-<style scoped>
-main {
-  padding: 2rem;
-}
-
+<style scoped lang="scss">
 .delete-button {
   margin: 50px auto;
   padding: 0.75rem 1rem;
@@ -36,10 +34,9 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.delete-button:hover {
-  background-color: #fcc;
-  border-color: #c33;
+  &:hover {
+    background-color: #fcc;
+    border-color: #c33;
+  }
 }
 </style>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router'
+import AppButtonBack from '@/layout/AppButtonBack.vue'
 import PokemonSearchAdvanced from '../components/PokemonSearchAdvanced.vue'
 
 
@@ -10,6 +11,7 @@ const router = useRouter()
 
 <template>
   <main>
+    <AppButtonBack />
     <h1>Recherche avancée</h1>
     <PokemonSearchAdvanced 
       :type1="route.query.type1 ? route.query.type1 as string : ''" 
@@ -23,16 +25,4 @@ const router = useRouter()
 </template>
 
 <style scoped>
-main {
-  padding: 2rem;
-  max-width: 1000px;
-  margin: 0 auto;
-  margin-bottom: 2rem;
-}
-
-h1 {
-  text-align: center;
-  margin-bottom: 2rem;
-  color: #333;
-}
 </style>
