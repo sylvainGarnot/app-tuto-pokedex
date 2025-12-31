@@ -9,7 +9,8 @@ import { useTeamStore } from '../stores/teamStore'
 
 // PROPS
 const props = defineProps<{
-  id: string
+  id: string,
+  isReadonly?: boolean
 }>()
 
 
@@ -42,7 +43,7 @@ onMounted(() => {
           <p><strong>Créée le :</strong> {{ formatDate(currentTeam.createdAt) }}</p>
           <p v-if="currentTeam.updatedAt"><strong>Dernier update :</strong> {{ formatDate(currentTeam.updatedAt) }}</p>
         </div>
-        <RouterLink v-if="currentTeam?.id" :to="{ name: 'teamUpdate', params: { id: currentTeam.id } }" class="update-button">
+        <RouterLink v-if="currentTeam?.id && !props.isReadonly" :to="{ name: 'teamUpdate', params: { id: currentTeam.id } }" class="update-button">
           ✏️
         </RouterLink>
       </div>

@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useTeamStore } from '@/stores/teamStore'
+import PokemonTeamDetail from '@/components/PokemonTeamDetail.vue'
 
 const router = useRouter()
 
@@ -25,6 +26,8 @@ async function saveTeam() {
 
 <template>
   <main>
+    <PokemonTeamDetail v-if="currentTeam?.id" :id="(currentTeam.id as string)" isReadonly />
+
     <button v-if="currentTeam" @click="saveTeam" class="btn-primary">
       Sauvegarder l'équipe
     </button>
