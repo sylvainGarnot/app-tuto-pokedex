@@ -87,18 +87,6 @@ onMounted(() => {
   gap: 1rem;
 }
 
-.team-info h1 {
-  margin-top: 0;
-  margin-bottom: 1rem;
-  color: #333;
-  font-size: 1.5rem;
-}
-
-.team-info p {
-  margin: 0.75rem 0;
-  color: #333;
-  font-size: 1rem;
-}
 
 .team-info strong {
   color: #666;
@@ -135,14 +123,6 @@ onMounted(() => {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.team-section h2 {
-  margin-top: 0;
-  color: #333;
-  font-size: 1.25rem;
-  border-bottom: 2px solid #42b983;
-  padding-bottom: 0.5rem;
-  margin-bottom: 1.5rem;
-}
 
 .pokemons-container {
   display: flex;

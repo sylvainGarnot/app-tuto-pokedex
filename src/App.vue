@@ -22,7 +22,5 @@ import TheFooter from './layout/TheFooter.vue'
   @media (max-width: 768px) {
     padding: 1rem;
   }
-
-  border: green solid 1px; // TEST
 }
 </style>

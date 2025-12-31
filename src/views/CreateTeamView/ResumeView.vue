@@ -35,4 +35,9 @@ async function saveTeam() {
 </template>
 
 <style scoped lang="scss">
+.btn-primary {
+  align-self: center;
+  width: 100%;
+  margin-top: 2rem;
+}
 </style>
