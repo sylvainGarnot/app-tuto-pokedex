@@ -8,6 +8,7 @@ import CreateTeamNameView from '../views/CreateTeamView/NameView.vue'
 import CreateTeamAddPokemonView from '../views/CreateTeamView/AddPokemonView.vue'
 import CreateTeamResumeView from '../views/CreateTeamView/ResumeView.vue'
 import PokemonTeamView from '../views/PokemonTeamView.vue'
+import PokemonTeamUpdateView from '../views/PokemonTeamView/UpdateView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -57,6 +58,11 @@ const router = createRouter({
       path: '/team/:id',
       name: 'teamDetail',
       component: PokemonTeamView,
+    },
+    {
+      path: '/team/:id/update',
+      name: 'teamUpdate',
+      component: PokemonTeamUpdateView,
     },
   ],
 })

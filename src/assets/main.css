@@ -1,5 +1,27 @@
 @import './base.css';
 
+/* Boutons primaires */
+.btn-primary {
+  padding: 1rem;
+  background-color: #42b983;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #369970;
+}
+
+.btn-primary:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
 
 h1 {
     color: #333;

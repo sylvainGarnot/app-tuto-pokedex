@@ -17,16 +17,13 @@ function createTeam() {
   loading.value = true
   error.value = ''
 
-  const newTeam: PokemonTeam = {
+  teamStore.setCurrentTeam({
     id: Date.now().toString(),
     name: teamName.value,
     subname: teamSubname.value,
     pokemons: [] as Pokemon[],
     createdAt: new Date().toISOString(),
-  }
-
-  // Sauvegarder l'équipe dans le store
-  teamStore.setCurrentTeam(newTeam)
+  } as PokemonTeam)
 
   // Rediriger vers la page d'ajout de Pokémons
   router.push({
@@ -64,7 +61,7 @@ function createTeam() {
         <div v-if="error" class="error">{{ error }}</div>
 
         <button type="submit" :disabled="loading" class="submit-button">
-          {{ loading ? 'Création en cours...' : 'Créer l\'équipe' }}
+          {{ loading ? 'Création en cours...' : 'Étape suivante' }}
         </button>
       </form>
     </div>

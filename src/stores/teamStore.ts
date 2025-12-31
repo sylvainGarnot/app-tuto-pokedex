@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import axios from 'axios'
-import type { PokemonTeam, Pokemon } from '../types/pokemon'
+import type { PokemonTeam, Pokemon, PokemonType } from '../types/pokemon'
 
 export const useTeamStore = defineStore('team', () => {
 
@@ -29,6 +29,10 @@ export const useTeamStore = defineStore('team', () => {
     }
   }
 
+  function clearCurrentTeam() {
+    currentTeam.value = null
+  }
+
   async function apiPostTeam(team: PokemonTeam) {
     try {
       await fetch('http://localhost:3000/teams', {
@@ -47,7 +51,7 @@ export const useTeamStore = defineStore('team', () => {
   }
 
   // FUNCTION USING FETCH
-  // function apiGetTeams() {
+  // async function apiGetTeams() {
   //   return fetch('http://localhost:3000/teams')
   //     .then(response => {
   //       if (!response.ok) {
@@ -66,7 +70,7 @@ export const useTeamStore = defineStore('team', () => {
   // }
 
   // FUNCTION USING AXIOS
-  function apiGetTeams() {
+  async function apiGetTeams() {
     return axios.get('http://localhost:3000/teams')
       .then(response => {
         teams.value = response.data
@@ -78,7 +82,34 @@ export const useTeamStore = defineStore('team', () => {
       })
   }
 
-  function apiDeleteTeam(teamId: string) {
+  async function apiGetTeam(id: string) {
+    axios.get('http://localhost:3000/teams/' + id)
+      .then(response => {
+        setCurrentTeam({
+          id: response.data.id,
+          name: response.data.name,
+          subname: response.data.subname,
+          createdAt: response.data.createdAt,
+          updatedAt: response.data.updatedAt,
+          pokemons: response.data.pokemons.map((pokemon: Pokemon) => ({
+            id: pokemon.id,
+            pokedexId: pokemon.pokedexId,
+            name: pokemon.name,
+            image: pokemon.image,
+            sprite: pokemon.sprite,
+            types: pokemon.types.map((type: PokemonType) => ({
+              name: type.name,
+              image: type.image,
+            })),
+          })),
+        } as PokemonTeam)
+      })
+      .catch(error => {
+        console.error('Erreur:', error)
+      })
+  }
+
+  async function apiDeleteTeam(teamId: string) {
     return axios.delete(`http://localhost:3000/teams/${teamId}`)
       .then(() => {
         teams.value = teams.value.filter(team => team.id !== teamId)
@@ -92,18 +123,15 @@ export const useTeamStore = defineStore('team', () => {
       })
   }
 
-  function clearCurrentTeam() {
-    currentTeam.value = null
-  }
-
   return {
     currentTeam,
     teams,
     setCurrentTeam,
     addCurrentTeamPokemon,
     removeCurrentTeamPokemon,
-    apiPostTeam,
+    apiGetTeam,
     apiGetTeams,
+    apiPostTeam,
     apiDeleteTeam,
     clearCurrentTeam,
   }

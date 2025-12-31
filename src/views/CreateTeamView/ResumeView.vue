@@ -4,9 +4,9 @@ import { useRouter } from 'vue-router'
 import { useTeamStore } from '@/stores/teamStore'
 
 const router = useRouter()
-const teamStore = useTeamStore()
 
-// DATA
+// STORE
+const teamStore = useTeamStore()
 const currentTeam = computed(() => teamStore.currentTeam)
 
 async function saveTeam() {
@@ -25,29 +25,11 @@ async function saveTeam() {
 
 <template>
   <main>
-    <button v-if="currentTeam" @click="saveTeam" class="save-team-button">
+    <button v-if="currentTeam" @click="saveTeam" class="btn-primary">
       Sauvegarder l'équipe
     </button>
   </main>
 </template>
 
 <style scoped lang="scss">
-
-.save-team-button {
-  padding: 1rem;
-  background-color: #42b983;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  width: fit-content;
-  align-self: flex-end;
-  
-  &:hover:not(:disabled) {
-    background-color: #369970;
-  }
-}
 </style>
