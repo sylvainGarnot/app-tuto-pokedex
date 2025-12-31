@@ -28,14 +28,6 @@ defineProps<{
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.results-list h2 {
-  color: #333;
-  margin-top: 0;
-  text-align: center;
-  font-size: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-
 .pokemon-grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);

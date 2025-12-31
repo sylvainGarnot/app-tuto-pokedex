@@ -94,17 +94,6 @@ function removePokemon(pokemonId: number) {
 </template>
 
 <style scoped lang="scss">
-main {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-  padding-bottom: 4rem;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
 
 .add-pokemon-container {
   display: grid;

@@ -87,19 +87,16 @@ function searchByGeneration() {
   <div class="search-container">
     <div class="input-group">
       <label for="generation">Génération</label>
-      <div class="input-with-button">
-        <select
-          id="generation"
-          v-model="selectedGeneration"
-          class="search-input"
-          @keyup.enter="searchByGeneration"
-        >
-          <option value="">Sélectionnez une génération...</option>
-          <option v-for="gen in generations" :key="gen" :value="gen">
-            {{ gen }}
-          </option>
-        </select>
-      </div>
+      <select
+        id="generation"
+        v-model="selectedGeneration"
+        class="search-input"
+      >
+        <option value="">Sélectionnez une génération...</option>
+        <option v-for="gen in generations" :key="gen" :value="gen">
+          {{ gen }}
+        </option>
+      </select>
     </div>
     <div v-if="error" class="error">{{ error }}</div>
     <div v-if="loading" class="load">Chargement...</div>
@@ -113,6 +110,13 @@ function searchByGeneration() {
   padding: 1rem;
   border-radius: 4px;
   margin-bottom: 1rem;
+}
+
+.load {
+  color: #666;
+  padding: 1rem;
+  text-align: center;
+  font-weight: 500;
 }
 
 .search-container {
@@ -135,39 +139,12 @@ label {
   font-size: 0.9rem;
 }
 
-.input-with-button {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
-
 .search-input {
-  flex: 1;
   padding: 0.75rem;
   font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 4px;
-  background-color: white;
-}
-
-.search-button {
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  background-color: #42b983;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  white-space: nowrap;
-}
-
-.search-button:hover {
-  background-color: #369970;
-}
-
-.search-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
+  width: 100%;
+  box-sizing: border-box;
 }
 </style>

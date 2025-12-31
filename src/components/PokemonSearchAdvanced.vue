@@ -82,39 +82,6 @@ const results = computed(() => {
 </template>
 
 <style scoped>
-.search-advanced-container {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-.search-tabs {
-  display: flex;
-  gap: 1rem;
-  border-bottom: 2px solid #eee;
-}
-
-.tab-button {
-  padding: 0.75rem 1.5rem;
-  background-color: transparent;
-  color: #666;
-  border: none;
-  border-bottom: 3px solid transparent;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: all 0.2s;
-}
-
-.tab-button.active {
-  color: #42b983;
-  border-bottom-color: #42b983;
-}
-
-.tab-button:hover {
-  color: #42b983;
-}
-
 .search-section {
   background-color: white;
   padding: 1.5rem;

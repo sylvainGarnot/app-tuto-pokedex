@@ -115,7 +115,7 @@ watch(() => props.type2, () => {
   <div class="search-container">
     <div class="input-group">
       <label for="type1">Type 1</label>
-      <div class="input-with-button">
+      <div class="type-select-wrapper">
         <select
           id="type1"
           :value="props.type1"
@@ -132,7 +132,7 @@ watch(() => props.type2, () => {
     </div>
     <div class="input-group">
       <label for="type2">Type 2</label>
-      <div class="input-with-button">
+      <div class="type-select-wrapper">
         <select
           id="type2"
           :value="props.type2"
@@ -162,6 +162,13 @@ watch(() => props.type2, () => {
   margin-bottom: 1rem;
 }
 
+.load {
+  color: #666;
+  padding: 1rem;
+  text-align: center;
+  font-weight: 500;
+}
+
 .search-container {
   display: flex;
   flex-direction: column;
@@ -182,25 +189,33 @@ label {
   font-size: 0.9rem;
 }
 
-.input-with-button {
+.type-select-wrapper {
+  position: relative;
   display: flex;
-  gap: 0.5rem;
   align-items: center;
 }
 
 .search-input {
-  flex: 1;
   padding: 0.75rem;
   font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 4px;
-  background-color: white;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.search-input:disabled {
+  background-color: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
 }
 
 .type-image {
-  width: 50px;
-  height: 50px;
+  position: absolute;
+  right: 0.75rem;
+  width: 24px;
+  height: 24px;
   object-fit: contain;
-  border-radius: 4px;
+  pointer-events: none;
 }
 </style>
