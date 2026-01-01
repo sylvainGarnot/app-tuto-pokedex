@@ -1,11 +1,16 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed } from 'vue'
 import type { Pokemon, PokemonTeam } from '@/types/pokemon'
 import { useTeamStore } from '@/stores/teamStore'
 
 const teamStore = useTeamStore()
-const router = useRouter()
+
+
+
+// PROPS
+const props = defineProps<{
+  buttonText: string
+}>()
 
 
 // REF
@@ -13,25 +18,66 @@ const teamName = ref('')
 const teamSubname = ref('')
 const loading = ref(false)
 const error = ref('')
+const currentTeam = computed(() => teamStore.currentTeam)
+
+
+
+// EMITS
+const emit = defineEmits<{
+  'team-created': []
+  'team-updated': []
+}>()
 
 
 // FUNCTION
-function createTeam() {
+function submitForm() {
+  if (currentTeam?.value?.id) {
+    updateTeam()
+  } else {
+    createTeam()
+  }
+}
 
+function updateTeam() {
   loading.value = true
-  error.value = ''
+  teamStore.apiPutTeam({
+    ...currentTeam.value,
+    name: teamName.value ? teamName.value : currentTeam.value?.name,
+    subname: teamSubname.value ? teamSubname.value : currentTeam.value?.subname,
+  } as PokemonTeam)
+  .then(() => {
+    teamName.value = ''
+    teamSubname.value = ''
+    emit('team-updated')
+  })
+  .catch(() => {
+    // Error handling
+  })
+  .finally(() => {
+    loading.value = false
+    error.value = ''
+  })
+}
 
-  teamStore.setCurrentTeam({
-    id: Date.now().toString(),
+function createTeam() {
+  loading.value = true
+  teamStore.apiPostTeam({
     name: teamName.value,
     subname: teamSubname.value,
     pokemons: [] as Pokemon[],
     createdAt: new Date().toISOString(),
   } as PokemonTeam)
-
-  // Rediriger vers la page d'ajout de Pokémons
-  router.push({
-    name: 'createTeamAddPokemon',
+  .then(() => {
+    teamName.value = ''
+    teamSubname.value = ''
+    emit('team-created')
+  })
+  .catch(() => {
+    // Error handling
+  })
+  .finally(() => {
+    loading.value = false
+    error.value = ''
   })
 }
 </script>
@@ -39,22 +85,22 @@ function createTeam() {
 <template>
   <main>
     <div class="form-container">
-      <form @submit.prevent="createTeam" class="team-form">
+      <form @submit.prevent="submitForm" class="team-form">
         <div class="form-group">
           <label for="team-name">Nom de l'équipe</label>
-          <input id="team-name" v-model="teamName" type="text" placeholder="Ex: nom de l'équipe" required
+          <input id="team-name" v-model="teamName" type="text" :placeholder="currentTeam?.name ? currentTeam.name : 'Ex: Équipe de feu'"
             class="input" />
         </div>
         <div class="form-group">
           <label for="team-subname">Sous-titre (optionnel)</label>
-          <input id="team-subname" v-model="teamSubname" type="text" placeholder="Ex: sous-titre de l'équipe"
+          <input id="team-subname" v-model="teamSubname" type="text" :placeholder="currentTeam?.subname ? currentTeam.subname : 'Ex: sous-titre de l\'équipe'"
             class="input" />
         </div>
 
         <div v-if="error" class="error">{{ error }}</div>
 
         <button type="submit" :disabled="loading" class="submit-button">
-          {{ loading ? 'Création en cours...' : 'Étape suivante' }}
+          {{ loading ? 'Création en cours...' : props.buttonText }}
         </button>
       </form>
     </div>

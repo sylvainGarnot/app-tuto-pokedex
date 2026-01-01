@@ -1,24 +1,26 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
 import { useTeamStore } from '@/stores/teamStore'
 import PokemonSearchSimple from '@/components/PokemonSearchSimple.vue'
 import PokemonSearchSimpleResult from '@/components/PokemonSearchSimpleResult.vue'
-import type { Pokemon } from '@/types/pokemon'
+import type { Pokemon, PokemonTeam } from '@/types/pokemon'
 
-const router = useRouter()
 const teamStore = useTeamStore()
+
 
 // DATA & STORE
 const currentTeam = computed(() => teamStore.currentTeam)
 const searchResult = ref<Pokemon | null>(null)
 const alertMessage = ref('')
+const loading = ref(false)
+
 
 // FUNCTIONS
 function handleSearchResult(result: Pokemon | null) {
   searchResult.value = result
   alertMessage.value = ''
 }
+
 
 function addPokemonToTeam() {
   if (!searchResult.value || !currentTeam.value) return
@@ -33,16 +35,48 @@ function addPokemonToTeam() {
     return
   }
 
-  teamStore.addCurrentTeamPokemon(searchResult.value)
-  alertMessage.value = `${searchResult.value.name} ajouté à l'équipe!`
-  searchResult.value = null
-  setTimeout(() => {
-    alertMessage.value = ''
-  }, 2500)
+  loading.value = true
+  alertMessage.value = ''
+  const newTeamPokemons = [...currentTeam.value.pokemons, searchResult.value]
+  teamStore.apiPutTeam({
+    ...currentTeam.value,
+    pokemons: newTeamPokemons as Pokemon[],
+  } as PokemonTeam)
+  .then(() => {
+    alertMessage.value = `${searchResult?.value?.name} ajouté à l'équipe!`
+  })
+  .catch(() => {
+    // Error handling
+  })
+  .finally(() => {
+    loading.value = false
+    setTimeout(() => {
+      alertMessage.value = ''
+    }, 2500)
+  })
 }
 
 function removePokemon(pokemonId: number) {
-  teamStore.removeCurrentTeamPokemon(pokemonId)
+  if (!currentTeam.value) return
+  loading.value = true
+  alertMessage.value = ''
+  const newTeamPokemons = currentTeam.value.pokemons.filter(p => p.id !== pokemonId)
+  teamStore.apiPutTeam({
+    ...currentTeam.value,
+    pokemons: newTeamPokemons as Pokemon[],
+  } as PokemonTeam)
+    .then(() => {
+      alertMessage.value = `Pokémon retiré de l'équipe`
+    })
+    .catch(() => {
+      // Error handling
+    })
+    .finally(() => {
+      loading.value = false
+      setTimeout(() => {
+        alertMessage.value = ''
+      }, 2500)
+    })
 }
 </script>
 
@@ -82,11 +116,6 @@ function removePokemon(pokemonId: number) {
         </div>
       </div>
     </div>
-
-    <button @click="router.push({ name: 'createTeamResume' })" class="btn-primary"
-      :disabled="currentTeam.pokemons.length === 0">
-      Étape suivante
-    </button>
   </main>
 </template>
 

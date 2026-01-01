@@ -35,7 +35,6 @@ onMounted(() => {
 
 <style scoped lang="scss">
 main {
-  border: red solid 1px; // TEST
   .content {
     display: flex;
     gap: 2rem;

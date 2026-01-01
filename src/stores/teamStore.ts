@@ -29,20 +29,49 @@ export const useTeamStore = defineStore('team', () => {
     }
   }
 
+  function updateTeam(team: PokemonTeam) {
+    if (currentTeam.value && currentTeam.value.id === team.id) {
+      currentTeam.value = { ...team }
+    }
+    const index = teams.value.findIndex(t => t.id === team.id)
+    if (index !== -1) {
+      teams.value[index] = { ...team }
+    }
+  }
+
   function clearCurrentTeam() {
     currentTeam.value = null
   }
 
   async function apiPostTeam(team: PokemonTeam) {
+    return axios.post('http://localhost:3000/teams', team)
+      .then((response) => {
+        console.log('Équipe créée avec succès:', response)
+        clearCurrentTeam()
+        setCurrentTeam({
+          id: response.data.id,
+          name: response.data.name,
+          subname: response.data.subname,
+          pokemons: response.data.pokemons as Pokemon[],
+          createdAt: response.data.createdAt,
+        } as PokemonTeam)
+      })
+      .catch(error => {
+        console.error('Erreur:', error)
+        throw error
+      })
+  }
+
+  async function apiPutTeam(team: PokemonTeam) {
     try {
-      await fetch('http://localhost:3000/teams', {
-        method: 'POST',
+      await fetch(`http://localhost:3000/teams/${team.id}`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(team),
       })
-      clearCurrentTeam()
+      updateTeam(team as PokemonTeam)
     } catch {
       // error handling
     } finally {
@@ -132,6 +161,7 @@ export const useTeamStore = defineStore('team', () => {
     apiGetTeam,
     apiGetTeams,
     apiPostTeam,
+    apiPutTeam,
     apiDeleteTeam,
     clearCurrentTeam,
   }
