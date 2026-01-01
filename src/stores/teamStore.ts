@@ -29,7 +29,7 @@ export const useTeamStore = defineStore('team', () => {
     }
   }
 
-  function updateTeam(team: PokemonTeam) {
+  function updateTeams(team: PokemonTeam) {
     if (currentTeam.value && currentTeam.value.id === team.id) {
       currentTeam.value = { ...team }
     }
@@ -43,62 +43,8 @@ export const useTeamStore = defineStore('team', () => {
     currentTeam.value = null
   }
 
-  async function apiPostTeam(team: PokemonTeam) {
-    return axios.post('http://localhost:3000/teams', team)
-      .then((response) => {
-        console.log('Équipe créée avec succès:', response)
-        clearCurrentTeam()
-        setCurrentTeam({
-          id: response.data.id,
-          name: response.data.name,
-          subname: response.data.subname,
-          pokemons: response.data.pokemons as Pokemon[],
-          createdAt: response.data.createdAt,
-        } as PokemonTeam)
-      })
-      .catch(error => {
-        console.error('Erreur:', error)
-        throw error
-      })
-  }
-
-  async function apiPutTeam(team: PokemonTeam) {
-    try {
-      await fetch(`http://localhost:3000/teams/${team.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(team),
-      })
-      updateTeam(team as PokemonTeam)
-    } catch {
-      // error handling
-    } finally {
-      // loading false
-    }
-  }
-
-  // FUNCTION USING FETCH
-  // async function apiGetTeams() {
-  //   return fetch('http://localhost:3000/teams')
-  //     .then(response => {
-  //       if (!response.ok) {
-  //         throw new Error('Erreur lors de la récupération des équipes')
-  //       }
-  //       return response.json()
-  //     })
-  //     .then(data => {
-  //       teams.value = data
-  //       return data
-  //     })
-  //     .catch(error => {
-  //       console.error('Erreur:', error)
-  //       throw error
-  //     })
-  // }
-
-  // FUNCTION USING AXIOS
+  
+  // API CALLS
   async function apiGetTeams() {
     return axios.get('http://localhost:3000/teams')
       .then(response => {
@@ -137,6 +83,43 @@ export const useTeamStore = defineStore('team', () => {
         console.error('Erreur:', error)
       })
   }
+
+  async function apiPostTeam(team: PokemonTeam) {
+    return axios.post('http://localhost:3000/teams', team)
+      .then((response) => {
+        console.log('Équipe créée avec succès:', response)
+        clearCurrentTeam()
+        setCurrentTeam({
+          id: response.data.id,
+          name: response.data.name,
+          subname: response.data.subname,
+          pokemons: response.data.pokemons as Pokemon[],
+          createdAt: response.data.createdAt,
+        } as PokemonTeam)
+      })
+      .catch(error => {
+        console.error('Erreur:', error)
+        throw error
+      })
+  }
+
+  async function apiPutTeam(team: PokemonTeam) {
+    try {
+      await fetch(`http://localhost:3000/teams/${team.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(team),
+      })
+      updateTeams(team as PokemonTeam)
+    } catch {
+      // error handling
+    } finally {
+      // loading false
+    }
+  }
+
 
   async function apiDeleteTeam(teamId: string) {
     return axios.delete(`http://localhost:3000/teams/${teamId}`)
